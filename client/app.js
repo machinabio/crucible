@@ -1,7 +1,7 @@
 //Client side
 Messages = new Mongo.Collection('messages');
 var test="this works";
-var luxSet, pressSet, tempSet, v1, v2, v3, v4;
+var luxSet, pressSet, tempSet, v1, v2, v3, v4,todo;
 var oldLuxSet, oldPressSet, oldTempSet, oldV1, oldV2, oldV3, oldV4;
 var running=false;
 
@@ -60,6 +60,7 @@ Template.main.events({
     var pressSet=$('#newPresSet').val();
     var luxSet=$('#newLuxSet').val();
     var tempSet=$('#newTempSet').val();
+    var todo=0;
     if ($('#valve1Status').prop('checked')) 
       {v1=1;}
     else
@@ -77,7 +78,7 @@ Template.main.events({
     else
       { v4=0; }
 
-    Meteor.call('updateArduino', tempSet,luxSet,pressSet,v1,v2,v3,v4);
+    Meteor.call('toServer', tempSet,luxSet,pressSet,v1,todo);
   },
 });
 
@@ -102,27 +103,3 @@ Template.main.onCreated(function() {
   });
   self.subscribe('messages');
 });
-
-
-
- Meteor.startup(function (){  
-   DailyStats.configure({
-     dailyTotal: {
-       color: "#45b76f",
-       key: "Total"
-     },
-    bucketA: {
-      color: "#E68A2E",
-      key: "Foo"
-    },
-    bucketB: {
-      color: "#80B2FF",
-      key: "Bar"
-    },
-    bucketC: {
-      color: "#DB4D4D",
-      key: "Squee"
-    }
-  });
-});
-
