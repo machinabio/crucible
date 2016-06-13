@@ -1,6 +1,7 @@
 var responseThermo;
 var oldTime=0;
 var tempBoard, tempChamber, tempTarget, tempFluid, pressure, pressTarget, LUX, luxTarget;
+var oldTempTarget=0;
 var LEDBrightness=0,luxPWM=0;
 var incomingTempTarget, incomingPressTarget, incomingLuxTarget;
 var v1=0,v2=0,v3=0,v4=0;
@@ -13,6 +14,18 @@ var ventStatus=false;
 (function(){
 
 //Server Side Updated
+//Reset Arduino
+// var gpio =Meteor.npmRequire('rpi-gpio');
+// gpio.setup(4, gpio.DIR_OUT, write);
+
+
+// function write() {
+//     gpio.write(4  , true, function(err) {
+//         if (err) throw err;
+//         console.log('Written to pin');
+//     });
+// }
+
 var sendToArduino = function(message) {
   serialPort.write(message);
 };
@@ -22,6 +35,13 @@ var sendToThermo = function(message) {
 };
 
 var SerialPort = Meteor.npmRequire('serialport');
+
+var SerialPortReset = Meteor.npmRequire('serialport');
+var serialPortArduinoReset = new SerialPort.SerialPort('/dev/ttyS0', {
+  baudrate: 1200,
+  parser: SerialPort.parsers.readline('\r\n')
+});
+
 
 //var serialPortThermo = new SerialPort.SerialPort('/dev/ThermoScientific',{
 var serialPortThermo = new SerialPort.SerialPort('/dev/ttyUSB0',{
@@ -34,16 +54,31 @@ var serialPort = new SerialPort.SerialPort('/dev/ttyS0', {
   parser: SerialPort.parsers.readline('\r\n')
 });
 
+//reset arduino 
+//var SerialPortArduinoReset = Meteor.npmRequire('serialport');
+
 
 Meteor.startup(function() {
   console.log("meteor is starting");
 });
+
+
+serialPortArduinoReset.on('open', function() {
+  console.log('Reseting');
+  //serialPortArduinoReset.close();
+  serialPortArduinoReset.close(function (err) {
+    console.log('Arduino Reset', err);
+  });
+});
+
+
 
 var messagePub;
 Meteor.publish('messages', function() {
   messagePub = this;
   return this.ready();
 });
+
 
 serialPort.on('open', function() {
   console.log('Port Arduino open');
@@ -84,12 +119,12 @@ serialPort.on('data', Meteor.bindEnvironment(function(data) {
     //writeToConsole();
     console.log('Board Temp: '+tempBoard+
             "C\nTemp Setpoint: "+tempTarget+
-            " C\nChamber Temp: "+ tempChamber+
+            " C\nChamber Temp: "+tempChamber+
             " C\nFluid Temp: " +tempFluid+
-            " C\nPressure: "+ pressure+
+            " C\nPressure: "+pressure+
             " psi\nPressure Setpoint: "+pressTarget+
             " psi\nLux Setpoint: "+luxTarget+
-            " \nLUX: "+ LUX+  
+            " \nLUX: "+LUX+  
             "\nLED Brightness: "+Math.round(LEDBrightness)+
             "\nMessage Arduino: "+arduinoReady+
             "\n");
@@ -129,7 +164,8 @@ Meteor.methods({
     var messageToArduino="{\"luxPWM\":"+luxPWM+",\"vS\":["+v1+","+v2+","+v3+","+v4+"],\"rst\":1,\"todo\":"+todo+"}";
       sendToArduino(new Buffer(messageToArduino));
       console.log(messageToArduino);
-      if (!todo){
+      if (oldTempTarget!=tempTarget){
+        oldTempTarget=tempTarget;
         Meteor.call('updateThermo',tempTarget);
       }
   },
@@ -185,7 +221,8 @@ controlCheck = function(luxTarget,LUX,pressTarget,pressure,tempTarget,tempFluid)
   if(Math.abs(pressTarget-pressure)>.01){
     operation+=1;
 
-    if (pressTarget-pressure<-1){
+    //if (pressTarget-pressure<-.3){
+    if (pressure/pressTarget<.97){
       v1=0;
       v2=0;
       v3=0;
@@ -201,7 +238,7 @@ controlCheck = function(luxTarget,LUX,pressTarget,pressure,tempTarget,tempFluid)
 
       if (pressureError>0){
         v1=0;
-        v2=Math.abs(pressureError);
+        v2=10+Math.abs(pressureError);
         v3=0;
         v4=0;
       }
@@ -209,7 +246,7 @@ controlCheck = function(luxTarget,LUX,pressTarget,pressure,tempTarget,tempFluid)
       if (pressureError<0){
         v2=0;
         v1=0;
-        v3=Math.abs(pressureError);
+        v3=10+Math.abs(pressureError);
         v4=0;
       }
       hysteresisReset=false;
