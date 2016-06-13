@@ -11,6 +11,10 @@ var messageInQue=false;
 var hysteresisReset=true;
 var ventStatus=false;
 
+//thermolators
+var ThermoScientific=false;
+var Julabo=false;
+
 (function(){
 
 //Server Side Updated
@@ -43,7 +47,7 @@ var serialPortArduinoReset = new SerialPort.SerialPort('/dev/ttyS0', {
 });
 
 
-//var serialPortThermo = new SerialPort.SerialPort('/dev/ThermoScientific',{
+//Change baudrate in Julabo from 4800 to 19200
 var serialPortThermo = new SerialPort.SerialPort('/dev/ttyUSB0',{
   baudrate: 19200,
   parser: SerialPort.parsers.readline('\r\n')
@@ -86,11 +90,12 @@ serialPort.on('open', function() {
 
 serialPortThermo.on('open', function() {
   console.log('Port Thermo open');
+  ThermoScientific=true;
 });
 
 
 serialPortThermo.on('data',Meteor.bindEnvironment(function(data){
-console.log("Direct from Thermo: "+data);
+console.log("Direct from Thermo: "+data+"\n");
 responseThermo=data;
 }));
 
@@ -114,7 +119,6 @@ serialPort.on('data', Meteor.bindEnvironment(function(data) {
     luxTarget=incomingLuxTarget;
     //luxTarget=parsedData.luxTarget;
    // LEDBrightness=parsedData.Brightness;
-    arduinoReady=parsedData.Ready;
 
     //writeToConsole();
     console.log('Board Temp: '+tempBoard+
@@ -125,9 +129,7 @@ serialPort.on('data', Meteor.bindEnvironment(function(data) {
             " psi\nPressure Setpoint: "+pressTarget+
             " psi\nLux Setpoint: "+luxTarget+
             " \nLUX: "+LUX+  
-            "\nLED Brightness: "+Math.round(LEDBrightness)+
-            "\nMessage Arduino: "+arduinoReady+
-            "\n");
+            "\nLED Brightness: "+Math.round(LEDBrightness));
 
 
     controlCheck(luxTarget,LUX,pressTarget,pressure,tempTarget,tempFluid);      
@@ -145,7 +147,7 @@ serialPort.on('data', Meteor.bindEnvironment(function(data) {
       LUX: LUX,
       luxTarget: luxTarget,
       LEDBrightness: Math.round(LEDBrightness)
-     }
+     };
      messagePub.added('messages', Random.id(), tmpDoc);
   } 
 }));
@@ -164,16 +166,23 @@ Meteor.methods({
     var messageToArduino="{\"luxPWM\":"+luxPWM+",\"vS\":["+v1+","+v2+","+v3+","+v4+"],\"rst\":1,\"todo\":"+todo+"}";
       sendToArduino(new Buffer(messageToArduino));
       console.log(messageToArduino);
-      if (oldTempTarget!=tempTarget){
+      //if (oldTempTarget!=tempTarget){
         oldTempTarget=tempTarget;
         Meteor.call('updateThermo',tempTarget);
-      }
+      //}
   },
   
   updateThermo: function(tempSet) {
-    var messageThermo="W SP "+ tempSet+ '\r\n';
-    console.log(messageThermo);
-    sendToThermo(new Buffer(messageThermo));
+    if(ThermoScientific){
+      var messageThermo="W SP "+ tempSet+ '\r\n';
+      sendToThermo(new Buffer(messageThermo));
+      console.log(messageThermo);
+    }
+    if(Julabo){
+      var messageThermo="A032_out_sp_00 "+tempSet+'\r\n';
+      sendToThermo(new Buffer(messageThermo));
+      console.log(messageThermo);
+    }
   },
   
   textThermo: function(textThermo) {
@@ -183,14 +192,29 @@ Meteor.methods({
   },
 
   runThermo: function(thermoRun) {
-    var messageThermo=thermoRun+'\r\n';
-    console.log(messageThermo);
-    sendToThermo(new Buffer(messageThermo));
+    if(ThermoScientific){
+      var messageThermo=thermoRun+'\r\n';
+      sendToThermo(new Buffer(messageThermo));
+      console.log(messageThermo);
+    }
+    if(Julabo){
+      var messageThermo="A032_out_mode_05 "+thermoRun+'\r\n';
+      sendToThermo(new Buffer(messageThermo));
+      console.log(messageThermo);
+    }
   },
 
   askFluidTemp: function(){
-    var messageThermo='R T1\r\n';
-    sendToThermo(new Buffer(messageThermo));
+    if(ThermoScientific){
+        var messageThermo='R T1\r\n';
+        sendToThermo(new Buffer(messageThermo));
+        console.log(messageThermo);
+      }
+      if(Julabo){
+        var messageThermo="A032_in_pv_00 "+'\r\n';
+        sendToThermo(new Buffer(messageThermo));
+        console.log(messageThermo);
+      }
   },
 
   message: function(newDoc) {
