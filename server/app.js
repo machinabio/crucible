@@ -15,6 +15,18 @@ var ventStatus=false;
 var ThermoScientific=false;
 var Julabo=false;
 
+//Initialize variables
+var database;
+var entitiesFilePath;
+var entities;
+var credentialsFilePath;
+
+//Initialize NPM Requirements
+var blitzen = Npm.require('blitzen');
+var fs = Npm.require('fs');
+var os = Npm.require('os');
+
+
 (function(){
 
 //Server Side Updated
@@ -64,6 +76,9 @@ var serialPort = new SerialPort.SerialPort('/dev/ttyS0', {
 
 Meteor.startup(function() {
   console.log("meteor is starting");
+
+
+
 });
 
 
@@ -148,6 +163,11 @@ serialPort.on('data', Meteor.bindEnvironment(function(data) {
       luxTarget: luxTarget,
       LEDBrightness: Math.round(LEDBrightness)
      };
+
+     //Call Blitzen Logging
+     Meteor.call('logReadings',tmpDoc);
+
+
      messagePub.added('messages', Random.id(), tmpDoc);
   } 
 }));
@@ -223,8 +243,110 @@ Meteor.methods({
 
   removeMessage: function(_id) {
     messagePub.removed('messages', _id);
-  }
+  },
 
+  logReadings: function(tmpDoc){
+
+
+
+
+    var entitiesFilePath = '/home/gilthanalas/repos/blitzen/.adsk-data360/entities-crucible.json';
+
+    var entities = readEntitiesFromFile(entitiesFilePath);
+
+    var credentialsFilePath = '/home/gilthanalas/repos/crucible/.adsk-data360/credentials-crucible.json'; 
+    //setupDatabase information
+
+
+    var database = new blitzen.Database(credentialsFilePath);
+
+    var timestamp_before = tmpDoc.created.toISOString();
+    var timestamp = tmpDoc.created.toISOString();
+
+    database.connect()
+    .then(
+      function(result)
+      {
+
+          var params = {
+            organizationId: entities.organization_id,
+            groupId: entities.group_id,
+            projectId: entities.project_id,
+            readingList: 
+            [
+              {
+                sensorId: 'tempBoard',
+                ts: timestamp,
+                val: tmpDoc.tempBoard,
+              },
+              {
+                sensorId: 'tempChamber',
+                ts: timestamp,
+                val: tmpDoc.tempChamber
+              },
+              {
+                sensorId: 'tempFluid',
+                ts: timestamp,
+                val: tmpDoc.tempFluid,
+              },
+              {
+                sensorId: 'tempBoard',
+                ts: timestamp,
+                val: tmpDoc.tempBoard,
+              },
+              {
+                sensorId: 'tempTarget',
+                ts: timestamp,
+                val: tmpDoc.tempTarget
+              },
+              {
+                sensorId: 'pressure',
+                ts: timestamp,
+                val: tmpDoc.pressure,
+              },
+              {
+                sensorId: 'pressTarget',
+                ts: timestamp,
+                val: tmpDoc.pressTarget
+              },
+              {
+                sensorId: 'LUX',
+                ts: timestamp,
+                val: tmpDoc.LUX,
+              },
+              {
+                sensorId: 'luxTarget',
+                ts: timestamp,
+                val: tmpDoc.luxTarget
+              },
+              {
+                sensorId: 'LEDPower',
+                ts: timestamp,
+                val: tmpDoc.LEDBrightness,
+              }      
+            ]
+          }
+
+          database.postReadings(params);
+      })
+      .then(
+        function(result)
+        {
+          //Query parameters to fetch data from Data 360
+          var params = 
+          {
+            organizationId: entities.organization_id,
+            groupId: entities.group_id,
+            projectId: entities.project_id,
+            // sensorList: 'LEDPower',
+            startTS: timestamp_before,
+            //endTS: '2016-04-27T08:02:55.586Z',
+            //rollupFrequency: '1W'
+          }
+
+          return database.getReadings(params);
+        });  
+    }
 });
 
 }).call(this);
@@ -280,3 +402,51 @@ controlCheck = function(luxTarget,LUX,pressTarget,pressure,tempTarget,tempFluid)
   Meteor.call('updateArduino', Math.round(luxPWM), v1,v2,v3,v4,operation);
 
  }
+
+
+
+
+ //Blitzen Read Entities
+readEntitiesFromFile = function(
+  entitiesFilePath)
+{
+  try 
+  {
+    var data = fs.readFileSync(entitiesFilePath, 'utf8');
+    var entities = JSON.parse(data);
+
+    if (  entities.organization_id 
+      &&  entities.group_id
+      &&  entities.project_id)
+    {
+      console.log('Successfully read entities.'); 
+      console.log("organization_id: " + entities.organization_id);
+      console.log("group_id: " + entities.group_id);
+      console.log("project_id: " + entities.project_id);
+    }
+    else
+    {
+      console.log('Error = > Invalid entities file format');
+      console.log('Aborting !');
+      process.exit(1);
+    }
+
+    return entities;
+  }
+  catch (e) 
+  {
+    if (e.code === 'ENOENT') 
+    {
+      console.log(
+        'Error => Entities file not found: ' 
+        + entitiesFilePath);
+    } 
+    else 
+    {
+      console.log("Error reading entities file: " + e.message);
+    }
+
+    console.log('Aborting !');
+    process.exit(1);
+  }
+}
