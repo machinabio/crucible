@@ -22,15 +22,6 @@ var Julabo = false;
 var SerialPort = Meteor.npmRequire('serialport');
 
 (function() {
-
-  var exec = Meteor.npmRequire('child_process').exec;
-  console.log('resetting arduino');
-  exec('gpioReset.py'), function(error, stdout, stderr){
-    console.log('...done');
-    console.log('......Stdout: '+stdout);
-    console.log('......Error: '+stderr);
-  };
-
   var sendToArduino = function(message) {
     serialPort.write(message);
   };
@@ -52,7 +43,16 @@ var SerialPort = Meteor.npmRequire('serialport');
 
   Meteor.startup(function() {
     console.log("meteor is starting");
+    var exec = Meteor.npmRequire('child_process').exec;
+  
+    console.log('resetting arduino');
+    exec('server/gpioReset.py'), function(error, stdout, stderr){
+      console.log('...done');
+      console.log('......Stdout: '+stdout);
+      console.log('......Error: '+stderr);
+    };
   });
+
 
   var messagePub;
   Meteor.publish('messages', function() {
