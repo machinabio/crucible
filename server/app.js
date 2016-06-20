@@ -23,20 +23,8 @@ var SerialPort = Meteor.npmRequire('serialport');
 
 (function() {
 
-  //Server Side Updated
-  //Reset Arduino
-  // var gpio =Meteor.npmRequire('rpi-gpio');
-  // gpio.setup(4, gpio.DIR_OUT, write);
-
-
-  // function write() {
-  //     gpio.write(4  , true, function(err) {
-  //         if (err) throw err;
-  //         console.log('Written to pin');
-  //     });
-  // }
-  var exec=require('child_process').exec;
-  Console.log('Resetting Ardiuno: ', exec('server/gpioReset.py'));
+  var exec = require('child_process').exec;
+  Console.log('Resetting Ardiuno: '+ exec('server/gpioReset.py'));
 
   var sendToArduino = function(message) {
     serialPort.write(message);
@@ -46,20 +34,13 @@ var SerialPort = Meteor.npmRequire('serialport');
     serialPortThermo.write(message);
   };
 
-  // var SerialPortReset = Meteor.npmRequire('serialport');
-  // var serialPortArduinoReset = new SerialPort.SerialPort('/dev/ttyS0', {
-  //   baudrate: 1200,
-  //   parser: SerialPort.parsers.readline('\r\n')
-  // });
-
-
   //Change baudrate in Julabo from 4800 to 19200
   var serialPortThermo = new SerialPort.SerialPort('/dev/ttyUSB0', {
     baudrate: 19200,
     parser: SerialPort.parsers.readline('\r\n')
   });
 
-  var serialPort = new SerialPort.SerialPort('/dev/ttyAMA0', {
+  var serialPort = new SerialPort.SerialPort('/dev/ttyS0', {
     baudrate: 115200,
     parser: SerialPort.parsers.readline('\r\n')
   });
@@ -288,4 +269,4 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
     v2 = 0; }
   Meteor.call('updateArduino', Math.round(luxPWM), v1, v2, v3, v4, operation);
 
-}
+};
