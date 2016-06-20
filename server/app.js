@@ -56,10 +56,10 @@ var os = Meteor.npmRequire('os');
 
     console.log('resetting arduino');
     // TODO: need to make this path relative to the package not absolute
-    exec('/home/pi/crucible2/server/gpioReset.py', function(error, stdout, stderr){
+    exec('/home/pi/crucible2/server/gpioReset.py', function(error, stdout, stderr) {
       console.log('...done');
-      console.log('......Stdout: '+stdout);
-      console.log('......Error: '+stderr);
+      console.log('......Stdout: ' + stdout);
+      console.log('......Error: ' + stderr);
     });
   });
 
@@ -67,7 +67,7 @@ var os = Meteor.npmRequire('os');
 
   var entities = readEntitiesFromFile(entitiesFilePath);
 
-  var credentialsFilePath = '/home/pi/.adsk-data360/credentials-crucible.json'; 
+  var credentialsFilePath = '/home/pi/.adsk-data360/credentials-crucible.json';
   //setupDatabase information
   var database = new blitzen.Database(credentialsFilePath);
 
@@ -144,8 +144,8 @@ var os = Meteor.npmRequire('os');
         LEDBrightness: Math.round(LEDBrightness)
       };
 
-     //Call Blitzen Logging
-     Meteor.call('logReadings',tmpDoc);
+      //Call Blitzen Logging
+      Meteor.call('logReadings', tmpDoc);
 
 
       messagePub.added('messages', Random.id(), tmpDoc);
@@ -223,91 +223,85 @@ var os = Meteor.npmRequire('os');
 
     removeMessage: function(_id) {
       messagePub.removed('messages', _id);
-  },
+    },
 
-  logReadings: function(tmpDoc){
-    var timestamp_before = tmpDoc.created.toISOString();
-    var timestamp = tmpDoc.created.toISOString();
+    logReadings: function(tmpDoc) {
+      var timestamp_before = tmpDoc.created.toISOString();
+      var timestamp = tmpDoc.created.toISOString();
 
-    database.connect()
-    .then(
-      function(result)
-      {
+      database.connect()
+        .then(
+          function(result) {
 
-          var params = {
-            organizationId: entities.organization_id,
-            groupId: entities.group_id,
-            projectId: entities.project_id,
-            readingList: 
-            [
-              {
-                sensorId: 'tempBoard',
-                ts: timestamp,
-                val: tmpDoc.tempBoard,
+            var params = {
+              organizationId: entities.organization_id,
+              groupId: entities.group_id,
+              projectId: entities.project_id,
+              readingList: [
+                {
+                  sensorId: 'tempBoard',
+                  ts: timestamp,
+                  val: tmpDoc.tempBoard,
               },
-              {
-                sensorId: 'tempChamber',
-                ts: timestamp,
-                val: tmpDoc.tempChamber
+                {
+                  sensorId: 'tempChamber',
+                  ts: timestamp,
+                  val: tmpDoc.tempChamber
               },
-              {
-                sensorId: 'tempFluid',
-                ts: timestamp,
-                val: tmpDoc.tempFluid,
+                {
+                  sensorId: 'tempFluid',
+                  ts: timestamp,
+                  val: tmpDoc.tempFluid,
               },
-              {
-                sensorId: 'tempTarget',
-                ts: timestamp,
-                val: tmpDoc.tempTarget
+                {
+                  sensorId: 'tempTarget',
+                  ts: timestamp,
+                  val: tmpDoc.tempTarget
               },
-              {
-                sensorId: 'pressure',
-                ts: timestamp,
-                val: tmpDoc.pressure,
+                {
+                  sensorId: 'pressure',
+                  ts: timestamp,
+                  val: tmpDoc.pressure,
               },
-              {
-                sensorId: 'pressTarget',
-                ts: timestamp,
-                val: tmpDoc.pressTarget
+                {
+                  sensorId: 'pressTarget',
+                  ts: timestamp,
+                  val: tmpDoc.pressTarget
               },
-              {
-                sensorId: 'LUX',
-                ts: timestamp,
-                val: tmpDoc.LUX,
+                {
+                  sensorId: 'LUX',
+                  ts: timestamp,
+                  val: tmpDoc.LUX,
               },
-              {
-                sensorId: 'luxTarget',
-                ts: timestamp,
-                val: tmpDoc.luxTarget
+                {
+                  sensorId: 'luxTarget',
+                  ts: timestamp,
+                  val: tmpDoc.luxTarget
               },
-              {
-                sensorId: 'LEDPower',
-                ts: timestamp,
-                val: tmpDoc.LEDBrightness,
-              }      
-            ]
-    }
+                {
+                  sensorId: 'LEDPower',
+                  ts: timestamp,
+                  val: tmpDoc.LEDBrightness,
+              }]
+            };
 
+            database.postReadings(params);
+          })
+        .then(
+          function(result) {
+            //Query parameters to fetch data from Data 360
+            var params = {
+              organizationId: entities.organization_id,
+              groupId: entities.group_id,
+              projectId: entities.project_id,
+              // sensorList: 'LEDPower',
+              startTS: timestamp_before,
+              //endTS: '2016-04-27T08:02:55.586Z',
+              //rollupFrequency: '1W'
+            }
 
-          database.postReadings(params);
-      })
-      .then(
-        function(result)
-        {
-          //Query parameters to fetch data from Data 360
-          var params = 
-          {
-            organizationId: entities.organization_id,
-            groupId: entities.group_id,
-            projectId: entities.project_id,
-            // sensorList: 'LEDPower',
-            startTS: timestamp_before,
-            //endTS: '2016-04-27T08:02:55.586Z',
-            //rollupFrequency: '1W'
-          }
-
-          return database.getReadings(params);
-        });  
+            return database.getReadings(params);
+          });
     }
   });
 
@@ -362,52 +356,37 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
       hysteresisReset = false;
     }
   }
-  if (ventStatus) { v1 = 255;
-    v2 = 0; }
+  if (ventStatus) {
+    v1 = 255;
+    v2 = 0;
+  }
   Meteor.call('updateArduino', Math.round(luxPWM), v1, v2, v3, v4, operation);
 
 };
 
-
-
-
- //Blitzen Read Entities
-readEntitiesFromFile = function(
-  entitiesFilePath)
-{
-  try 
-  {
+//Blitzen Read Entities
+function readEntitiesFromFile(entitiesFilePath) {
+  try {
     var data = fs.readFileSync(entitiesFilePath, 'utf8');
     var entities = JSON.parse(data);
 
-    if (  entities.organization_id 
-      &&  entities.group_id
-      &&  entities.project_id)
-    {
-      console.log('Successfully read entities.'); 
+    if (entities.organization_id && entities.group_id && entities.project_id) {
+      console.log('Successfully read entities.');
       console.log("organization_id: " + entities.organization_id);
       console.log("group_id: " + entities.group_id);
       console.log("project_id: " + entities.project_id);
-    }
-    else
-    {
+    } else {
       console.log('Error = > Invalid entities file format');
       console.log('Aborting !');
       process.exit(1);
     }
 
     return entities;
-  }
-  catch (e) 
-  {
-    if (e.code === 'ENOENT') 
-    {
+  } catch (e) {
+    if (e.code === 'ENOENT') {
       console.log(
-        'Error => Entities file not found: ' 
-        + entitiesFilePath);
-    } 
-    else 
-    {
+        'Error => Entities file not found: ' + entitiesFilePath);
+    } else {
       console.log("Error reading entities file: " + e.message);
     }
 
@@ -416,50 +395,3 @@ readEntitiesFromFile = function(
   }
 }
 
-
-
-
- //Blitzen Read Entities
-readEntitiesFromFile = function(
-  entitiesFilePath)
-{
-  try 
-  {
-    var data = fs.readFileSync(entitiesFilePath, 'utf8');
-    var entities = JSON.parse(data);
-
-    if (  entities.organization_id 
-      &&  entities.group_id
-      &&  entities.project_id)
-    {
-      console.log('Successfully read entities.'); 
-      console.log("organization_id: " + entities.organization_id);
-      console.log("group_id: " + entities.group_id);
-      console.log("project_id: " + entities.project_id);
-    }
-    else
-    {
-      console.log('Error = > Invalid entities file format');
-      console.log('Aborting !');
-      process.exit(1);
-    }
-
-    return entities;
-  }
-  catch (e) 
-  {
-    if (e.code === 'ENOENT') 
-    {
-      console.log(
-        'Error => Entities file not found: ' 
-        + entitiesFilePath);
-    } 
-    else 
-    {
-      console.log("Error reading entities file: " + e.message);
-    }
-
-    console.log('Aborting !');
-    process.exit(1);
-  }
-}
