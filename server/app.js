@@ -32,6 +32,13 @@ var os = Npm.require('os');
 
 
 
+//Initialize NPM Requirements
+var blitzen = Npm.require('blitzen');
+var fs = Npm.require('fs');
+var os = Npm.require('os');
+
+
+
 (function() {
   var sendToArduino = function(message) {
     serialPort.write(message);
@@ -55,6 +62,8 @@ var os = Npm.require('os');
   Meteor.startup(function() {
     console.log("meteor is starting");
     var exec = Meteor.npmRequire('child_process').exec;
+
+
 
 
   
@@ -296,6 +305,8 @@ var os = Npm.require('os');
                 val: tmpDoc.LEDBrightness,
               }      
             ]
+              }      
+            ]
     }
 
 
@@ -377,6 +388,54 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
   Meteor.call('updateArduino', Math.round(luxPWM), v1, v2, v3, v4, operation);
 
 };
+
+
+
+
+ //Blitzen Read Entities
+readEntitiesFromFile = function(
+  entitiesFilePath)
+{
+  try 
+  {
+    var data = fs.readFileSync(entitiesFilePath, 'utf8');
+    var entities = JSON.parse(data);
+
+    if (  entities.organization_id 
+      &&  entities.group_id
+      &&  entities.project_id)
+    {
+      console.log('Successfully read entities.'); 
+      console.log("organization_id: " + entities.organization_id);
+      console.log("group_id: " + entities.group_id);
+      console.log("project_id: " + entities.project_id);
+    }
+    else
+    {
+      console.log('Error = > Invalid entities file format');
+      console.log('Aborting !');
+      process.exit(1);
+    }
+
+    return entities;
+  }
+  catch (e) 
+  {
+    if (e.code === 'ENOENT') 
+    {
+      console.log(
+        'Error => Entities file not found: ' 
+        + entitiesFilePath);
+    } 
+    else 
+    {
+      console.log("Error reading entities file: " + e.message);
+    }
+
+    console.log('Aborting !');
+    process.exit(1);
+  }
+}
 
 
 
