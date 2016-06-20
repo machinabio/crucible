@@ -1,3 +1,4 @@
 {
-    "serialport":"2.0.6"
+    "serialport":"2.0.6",
+    "blitzen": "https://github.com/AlexTessier/blitzen-nodejs"
 }

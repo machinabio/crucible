@@ -26,9 +26,9 @@ var entities;
 var credentialsFilePath;
 
 //Initialize NPM Requirements
-var blitzen = Npm.require('blitzen');
-var fs = Npm.require('fs');
-var os = Npm.require('os');
+var blitzen = Meteor.npmRequire('blitzen');
+var fs = Meteor.npmRequire('fs');
+var os = Meteor.npmRequire('os');
 
 (function() {
   var sendToArduino = function(message) {
@@ -284,8 +284,6 @@ var os = Npm.require('os');
                 sensorId: 'LEDPower',
                 ts: timestamp,
                 val: tmpDoc.LEDBrightness,
-              }      
-            ]
               }      
             ]
     }
