@@ -24,7 +24,9 @@ var SerialPort = Meteor.npmRequire('serialport');
 (function() {
 
   var exec = Meteor.npmRequire('child_process').exec;
-  console.log('Resetting Ardiuno: '+ exec('server/gpioReset.py'));
+  exec('gpioReset.py'), function(err, stdout){
+    console.log('Resetting arduino : ', stdout);
+  };
 
   var sendToArduino = function(message) {
     serialPort.write(message);
@@ -45,24 +47,9 @@ var SerialPort = Meteor.npmRequire('serialport');
     parser: SerialPort.parsers.readline('\r\n')
   });
 
-  //reset arduino 
-  //var SerialPortArduinoReset = Meteor.npmRequire('serialport');
-
-
   Meteor.startup(function() {
     console.log("meteor is starting");
   });
-
-
-  serialPortArduinoReset.on('open', function() {
-    console.log('Reseting');
-    //serialPortArduinoReset.close();
-    serialPortArduinoReset.close(function(err) {
-      console.log('Arduino Reset', err);
-    });
-  });
-
-
 
   var messagePub;
   Meteor.publish('messages', function() {
