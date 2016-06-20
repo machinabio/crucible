@@ -46,11 +46,12 @@ var SerialPort = Meteor.npmRequire('serialport');
     var exec = Meteor.npmRequire('child_process').exec;
   
     console.log('resetting arduino');
-    exec('server/gpioReset.py'), function(error, stdout, stderr){
+    // TODO: need to make this path relative to the package not absolute
+    exec('/home/pi/crucible2/server/gpioReset.py', function(error, stdout, stderr){
       console.log('...done');
       console.log('......Stdout: '+stdout);
       console.log('......Error: '+stderr);
-    };
+    });
   });
 
 
