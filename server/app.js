@@ -235,11 +235,11 @@ var os = Npm.require('os');
 
 
 
-    var entitiesFilePath = '/home/gilthanalas/repos/blitzen/.adsk-data360/entities-crucible.json';
+    var entitiesFilePath = '/.adsk-data360/entities-crucible.json';
 
     var entities = readEntitiesFromFile(entitiesFilePath);
 
-    var credentialsFilePath = '/home/gilthanalas/repos/crucible/.adsk-data360/credentials-crucible.json'; 
+    var credentialsFilePath = '/.adsk-data360/credentials-crucible.json'; 
     //setupDatabase information
 
 
