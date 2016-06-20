@@ -24,7 +24,7 @@ var SerialPort = Meteor.npmRequire('serialport');
 (function() {
 
   var exec = Meteor.npmRequire('child_process').exec;
-  Console.log('Resetting Ardiuno: '+ exec('server/gpioReset.py'));
+  console.log('Resetting Ardiuno: '+ exec('server/gpioReset.py'));
 
   var sendToArduino = function(message) {
     serialPort.write(message);
