@@ -266,11 +266,6 @@ var os = Npm.require('os');
                 val: tmpDoc.tempFluid,
               },
               {
-                sensorId: 'tempBoard',
-                ts: timestamp,
-                val: tmpDoc.tempBoard,
-              },
-              {
                 sensorId: 'tempTarget',
                 ts: timestamp,
                 val: tmpDoc.tempTarget
