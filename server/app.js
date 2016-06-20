@@ -30,15 +30,6 @@ var blitzen = Npm.require('blitzen');
 var fs = Npm.require('fs');
 var os = Npm.require('os');
 
-
-
-//Initialize NPM Requirements
-var blitzen = Npm.require('blitzen');
-var fs = Npm.require('fs');
-var os = Npm.require('os');
-
-
-
 (function() {
   var sendToArduino = function(message) {
     serialPort.write(message);
@@ -63,10 +54,6 @@ var os = Npm.require('os');
     console.log("meteor is starting");
     var exec = Meteor.npmRequire('child_process').exec;
 
-
-
-
-  
     console.log('resetting arduino');
     // TODO: need to make this path relative to the package not absolute
     exec('/home/pi/crucible2/server/gpioReset.py', function(error, stdout, stderr){
@@ -75,6 +62,14 @@ var os = Npm.require('os');
       console.log('......Error: '+stderr);
     });
   });
+
+  var entitiesFilePath = '/home/pi/.adsk-data360/entities-crucible.json';
+
+  var entities = readEntitiesFromFile(entitiesFilePath);
+
+  var credentialsFilePath = '/home/pi/.adsk-data360/credentials-crucible.json'; 
+  //setupDatabase information
+  var database = new blitzen.Database(credentialsFilePath);
 
 
   var messagePub;
@@ -231,20 +226,6 @@ var os = Npm.require('os');
   },
 
   logReadings: function(tmpDoc){
-
-
-
-
-    var entitiesFilePath = '/.adsk-data360/entities-crucible.json';
-
-    var entities = readEntitiesFromFile(entitiesFilePath);
-
-    var credentialsFilePath = '/.adsk-data360/credentials-crucible.json'; 
-    //setupDatabase information
-
-
-    var database = new blitzen.Database(credentialsFilePath);
-
     var timestamp_before = tmpDoc.created.toISOString();
     var timestamp = tmpDoc.created.toISOString();
 
