@@ -17,7 +17,7 @@ var ventStatus = false;
 
 //thermolators
 var ThermoScientific = false;
-//var Julabo = false;
+var Julabo = false;
 
 var SerialPort = Meteor.npmRequire('serialport');
 var database;
@@ -85,7 +85,8 @@ var os = Meteor.npmRequire('os');
 
   serialPortThermo.on('open', function() {
     console.log('Port Thermo open');
-    ThermoScientific = true;
+    //ThermoScientific = true;
+    Julabo=true;
   });
 
 
