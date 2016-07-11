@@ -202,7 +202,7 @@ var os = Meteor.npmRequire('os');
         console.log(messageThermo);
       }
       if (Julabo) {
-        var messageThermo = "out_mode_05 " + thermoRun + '\r\n';
+        var messageThermo = "out_mode_05"+'\r\n';
         sendToThermo(new Buffer(messageThermo));
         console.log(messageThermo);
       }
