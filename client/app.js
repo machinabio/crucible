@@ -42,12 +42,12 @@ Template.main.events({
   'click #runThermo': function(e, t) {
     e.preventDefault();
     if (running==false){
-      var thermoRun="W GO 1";
+      var thermoRun="1";
       running=true;
     }
 
     else {
-      var thermoRun="W RR -1";
+      var thermoRun="0";
       running=false;
     }
 
