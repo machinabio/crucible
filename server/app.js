@@ -327,7 +327,7 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
 
   }
 
-  if (Math.abs(pressTarget - pressure) > .01) {
+  if ((pressTarget - pressure) > .01) {
     operation += 1;
 
     //if (pressTarget-pressure<-.3){
@@ -361,8 +361,11 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
     }
   }
   if (ventStatus) {
+    pressTarget=0;
     v1 = 255;
     v2 = 0;
+    v3=0;
+    v4=0;
   }
   Meteor.call('updateArduino', Math.round(luxPWM), v1, v2, v3, v4, operation);
 
