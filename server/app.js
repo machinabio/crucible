@@ -1,6 +1,9 @@
 var responseThermo;
 var oldTime = 0;
-var tempBoard, tempChamber, tempTarget, tempFluid, pressure, pressTarget, LUX, luxTarget;
+var tempBoard, tempChamber, tempFluid, pressure, LUX;
+var pressTarget=0.07;
+var luxTarget=0;
+var tempTarget=0;
 var oldTempTarget = 0;
 var LEDBrightness = 0;
 var luxPWM = 0;
