@@ -212,7 +212,7 @@ var os = Meteor.npmRequire('os');
         console.log(messageThermo);
       }
       if (Julabo) {
-        var messageThermo = "in_pv_00 " + '\r\n';
+        var messageThermo = "in_pv_00" + '\r\n';
         sendToThermo(new Buffer(messageThermo));
         console.log(messageThermo);
       }
