@@ -327,11 +327,11 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
 
   }
 
-  if ((pressTarget - pressure) > .01) {
+  if (Math.abs(pressTarget - pressure) > .01) {
     operation += 1;
 
     //if (pressTarget-pressure<-.3){
-    if (pressure / pressTarget < .8) {
+    if (pressTarget-pressure < 2) {
       v1 = 0;
       v2 = 0;
       v3 = 0;
