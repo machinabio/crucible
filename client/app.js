@@ -56,7 +56,7 @@ Template.main.events({
 
   'click #setValues': function(e, t) {
     e.preventDefault();
-    var v1,v2,v3,v4;
+    var v1,v2,v3,v4,vH;
     var pressSet=$('#newPresSet').val();
     var luxSet=$('#newLuxSet').val();
     var tempSet=$('#newTempSet').val();
@@ -65,10 +65,10 @@ Template.main.events({
       {v1=1;}
     else
       { v1=0; }
-    if ($('#valve2Status').prop('checked')) 
-      { v2=1; }
+    if ($('#valvesHold').prop('checked')) 
+      { vH=1; }
     else
-      { v2=0; }
+      { vH=0; }
     if ($('#valve3Status').prop('checked'))
       { v3=1; }
     else
@@ -78,7 +78,7 @@ Template.main.events({
     else
       { v4=0; }
 
-    Meteor.call('toServer', tempSet,luxSet,pressSet,v1,todo);
+    Meteor.call('toServer', tempSet,luxSet,pressSet,v1,vH,todo);
   },
 });
 

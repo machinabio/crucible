@@ -17,6 +17,7 @@ var messageInQue = false;
 
 var hysteresisReset = true;
 var ventStatus = false;
+var ventHoldStatus = false;
 
 //thermolators
 var ThermoScientific = false;
@@ -158,12 +159,13 @@ var os = Meteor.npmRequire('os');
 
   Meteor.methods({
 
-    toServer: function(tempSet, luxSet, pressSet, vent, todo) {
+    toServer: function(tempSet, luxSet, pressSet, vent, ventHold, todo) {
       //messageInQue=true;
       incomingLuxTarget = luxSet;
       incomingPressTarget = pressSet;
       incomingTempTarget = tempSet;
       ventStatus = vent;
+      ventHoldStatus=ventHold;
     },
 
     updateArduino: function(luxPWM, v1, v2, v3, v4, todo) {
@@ -367,6 +369,15 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
     v3=0;
     v4=0;
   }
+
+  if (ventHoldStatus){
+    //pressTarget=0;
+    v1 = 0;
+    v2 = 0;
+    v3=0;
+    v4=0;
+  }
+
   Meteor.call('updateArduino', Math.round(luxPWM), v1, v2, v3, v4, operation);
 
 };
