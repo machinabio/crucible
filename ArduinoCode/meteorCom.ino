@@ -1,14 +1,12 @@
 void checkCommunication() {
   byte index = 0;
   while (Serial1.available() > 0) {
-    //Serial.println(Serial1.available());
     if (index < 64) {
       delay(5);
       inChar = Serial1.read(); // Read a character
       inMeteor[index] = inChar; // Store it
       index++; // Increment where to write next
       inMeteor[index] = '\0'; // Null terminate the string
-      //Serial.println(inMeteor);
     }
     messageFull = true;
   }
@@ -18,28 +16,26 @@ void checkCommunication() {
   }
 }
 
-
-
 void parseJson() {
   int luxPWM=0;
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(inMeteor);
 
   if (!root.success()) {
-    //Serial.println("parseObject() failed");
+    // fail to parse
     return;
   }
  
-  resetFun=root["rst"];
-  luxPWM = root["luxPWM"];
+  resetFun  = root["rst"];
+  luxPWM    = root["luxPWM"];
+  valve1    = root["vS"][0];
+  valve2    = root["vS"][1];
+  valve3    = root["vS"][2];
+  valve4    = root["vS"][3];
+  operation = root["todo"];
   //tempTarget = root["tS"];
   //luxTarget = root["lS"];
   //pressureTarget = root["pS"];
-  valve1 = root["vS"][0];
-  valve2 = root["vS"][1];
-  valve3 = root["vS"][2];
-  valve4 = root["vS"][3];
-  operation = root["todo"];
   
   if (resetFun){// if true arduino will keep running
     resetWatchDog=millis();

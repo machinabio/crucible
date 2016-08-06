@@ -1,11 +1,10 @@
 <head>
   <title>Crucible </title>
 </head>
- 
+
 <body>
   {{> header}} {{> main}}
 </body>
-
 <template name="header">
   <div class="navbar">
     <div class="navbar-inner">
@@ -14,63 +13,45 @@
     </div>
   </div>
 </template>
-
 <template name='main'>
   <div class='container'>
     <h2>Crucible Talking to the World</h2>
     <hr/>{{#if Template.subscriptionsReady}}
-    <!--button id='getPressure' class='btn btn-small btn-primary'>Read Pressure</button-->
-    <button id='setValues' class='btn btn-small btn-primary'>Set Values</button>
     <button id='clearMessages' class='btn btn-small btn-primary'>Clear Messages</button>
     <toggle id='runThermo' class='btn btn-small btn-primary'>Run</toggle>
     <br>
-     <br>
+    <br>
     <!--Vacuum : <input type="checkbox" id="valve4Status">
     Vacuum tune: <input type="checkbox" id="valve3Status">
     Gas: <input type="checkbox" id="valve2Status">-->
-    Vent: <input type="checkbox" id="valve1Status">
+    Vent:
+    <input type="checkbox" id="valve1Status">
     <br>
-
     <!--form action="LuxSet"-->
-    Lux. SetPoint: <input type="number" value= "0" id="newLuxSet" min="0" max="30000">
+    Lux. SetPoint:
+    <input type="number" value="0" id="newLuxSet" min="0" max="30000">
     <!--/form-->
     <br>
     <!--form action="TempSet"-->
-    Temp SetPoint: <input type="number" value="-25" id="newTempSet" min="-100" max="100">
+    Temp SetPoint:
+    <input type="number" value="-25" id="newTempSet" min="-100" max="100">
     <!--/form-->
     <br>
     <!--form action="PresSet"-->
-    Pres SetPoint: <input type="number" value="0" id="newPresSet" min="-15" max="0">
+    Pres SetPoint:
+    <input type="number" value="0" id="newPresSet" min="-15" max="0">
     <!--/form-->
     <br>
+    <br> Send to Thermo:
+    <input type="text" id="textThermo">
+    <button id='sendThermoCoommand' class='btn btn-small btn-primary'>Send command</button>
     <br>
-    Send to Thermo: <input type="text" id="textThermo">
     <br>
-    <br>
-    
     <!--{{> DailyStatsChart }}-->
-    <br>  
+    <br>
     <div id='messages'>
-      {{#each messages}}
-        {{#if isMessageType 'getValves'}}
-         Valve 1: {{Valve1}}, Valve 2: {{Valve2}}, Valve 3: {{Valve3}}, Valve 4: {{Valve4}}
-        
-        {{else}}
-        {{#if isMessageType 'methodResponse'}}
-          Method Response with pin : {{pin}}, state : {{#if state}}on{{else}}off{{/if}}, created : {{created}}
-        
-        {{else}}
-        {{#if isMessageType 'getAll'}}
-          Board Temp: {{tempBoard}} C, Chamber Temp:  {{tempChamber}} C, Temp Setpoint: {{tempTarget}} C, Temp Fluid: {{tempFluid}} C, Pressure: {{pressure}} psi, Pressure Setpoint: {{pressTarget}} psi, LUX: {{LUX}}, Lux Setpoint: {{luxTarget}} lux, LED Brigntness: {{LEDBrightness}} %
-
-
-        {{else}}
-          Unknown messageType.
-          {{/if}}  
-          {{/if}}
-        {{/if}}
-        <br>
-      {{/each}}
+      {{#each messages}} {{#if isMessageType 'getValves'}} Valve 1: {{Valve1}}, Valve 2: {{Valve2}}, Valve 3: {{Valve3}}, Valve 4: {{Valve4}} {{else}} {{#if isMessageType 'methodResponse'}} Method Response with pin : {{pin}}, state : {{#if state}}on{{else}}off{{/if}}, created : {{created}} {{else}} {{#if isMessageType 'getAll'}} Board Temp: {{tempBoard}} C, Chamber Temp: {{tempChamber}} C, Temp Setpoint: {{tempTarget}} C, Temp Fluid: {{tempFluid}} C, Pressure: {{pressure}} psi, Pressure Setpoint: {{pressTarget}} psi, LUX: {{LUX}}, Lux Setpoint: {{luxTarget}} lux, LED Brigntness: {{LEDBrightness}} % {{else}} Unknown messageType. {{/if}} {{/if}} {{/if}}
+      <br> {{/each}}
     </div>
     {{else}}Loading ...{{/if}}
   </div>

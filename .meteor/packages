@@ -5,8 +5,10 @@
 
 standard-app-packages
 twbs:bootstrap
-standard-minifiers
 meteorhacks:npm
 
 
 npm-container
+standard-minifier-css
+standard-minifier-js
+ecmascript

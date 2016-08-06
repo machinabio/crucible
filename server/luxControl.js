@@ -1,4 +1,3 @@
-
 luxControl = function(LUX, luxTarget,ledBrightness){
 
     if(ledBrightness>10 && LUX==0){LUX=30000;}
@@ -9,6 +8,6 @@ luxControl = function(LUX, luxTarget,ledBrightness){
     if(ledBrightness>100){ledBrightness=70;}//avoid saturating the sensor
     var powerLed=ledBrightness*255/100;
 
-    console.log("LUX: "+LUX+", Target: "+luxTarget+", Error: "+luxError+", Power: "+powerLed)
+//    console.log("LUX: "+LUX+", Target: "+luxTarget+", Error: "+luxError+", Power: "+powerLed)
     return(powerLed);
 }

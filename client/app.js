@@ -1,5 +1,6 @@
 //Client side
 Messages = new Mongo.Collection('messages');
+
 var test="this works";
 var luxSet, pressSet, tempSet, v1, v2, v3, v4,todo;
 var oldLuxSet, oldPressSet, oldTempSet, oldV1, oldV2, oldV3, oldV4;
@@ -32,54 +33,64 @@ Template.main.events({
     });
   },
 
-  'click #textThermo': function(e, t) {
+  'click #sendThermoCoommand': function(e, t) {
     e.preventDefault();
     var textThermo=$('#textThermo').val();
     Meteor.call('textThermo', textThermo);
   },
 
-
   'click #runThermo': function(e, t) {
     e.preventDefault();
-    if (running==false){
-      var thermoRun="W GO 1";
-      running=true;
-    }
-
-    else {
-      var thermoRun="W RR -1";
-      running=false;
-    }
-
-    Meteor.call('runThermo', thermoRun);
+    var running = Peripherals.findOne({_id: 'thermolator'}).running;
+    Peripherals.upsert({_id: 'thermolator'}, { $set : {running: !running}});
   },
 
-  'click #setValues': function(e, t) {
-    e.preventDefault();
-    var v1,v2,v3,v4;
-    var pressSet=$('#newPresSet').val();
-    var luxSet=$('#newLuxSet').val();
-    var tempSet=$('#newTempSet').val();
-    var todo=0;
-    if ($('#valve1Status').prop('checked')) 
-      {v1=1;}
-    else
-      { v1=0; }
-    if ($('#valve2Status').prop('checked')) 
-      { v2=1; }
-    else
-      { v2=0; }
-    if ($('#valve3Status').prop('checked'))
-      { v3=1; }
-    else
-      { v3=0; }
-    if ($('#valve4Status').prop('checked'))
-      { v4=1; }
-    else
-      { v4=0; }
-
-    Meteor.call('toServer', tempSet,luxSet,pressSet,v1,todo);
+  'change #newTempSet': function(e, t) {
+    var setpoint=$('#newTempSet').val();
+    Peripherals.upsert({_id: 'thermolator'}, { $set : {setpoint: setpoint}});
   },
+
+  'change #newLuxSet' : function(e, t) {
+    var setpoint=$('#newLuxSet').val();
+    Peripherals.upsert({_id: 'led'}, { $set : {setpoint: setpoint}});
+  },
+
+  'change #newPresSet' : function(e, t) {
+    var setpoint=$('#newPresSet').val();
+    Peripherals.upsert({_id: 'chamber'}, { $set : {setpoint: setpoint}});
+  },
+
+  'change #valve1Status' : function(e, t) {
+    var state=$('#newPresSet').val();
+    Peripherals.upsert({_id: 'pressure'}, { $set : {vent: state}});
+  },
+
+  // 'click #setValues' : function(e, t) {
+  //   e.preventDefault();
+  //   var v1,v2,v3,v4;
+  //   var pressSet=$('#newPresSet').val();
+  //   var luxSet=$('#newLuxSet').val();
+  //   var tempSet=$('#newTempSet').val();
+  //   var todo=0;
+  //   if ($('#valve1Status').prop('checked')) 
+  //     {v1=1;}
+  //   else
+  //     { v1=0; }
+  //   if ($('#valve2Status').prop('checked')) 
+  //     { v2=1; }
+  //   else
+  //     { v2=0; }
+  //   if ($('#valve3Status').prop('checked'))
+  //     { v3=1; }
+  //   else
+  //     { v3=0; }
+  //   if ($('#valve4Status').prop('checked'))
+  //     { v4=1; }
+  //   else
+  //     { v4=0; }
+
+  //   Meteor.call('toServer', tempSet,luxSet,pressSet,v1,todo);
+  // },
 });
 
 
