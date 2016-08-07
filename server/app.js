@@ -150,8 +150,22 @@ var os = Meteor.npmRequire('os');
       };
 
       //Call Blitzen Logging
-      Meteor.call('logReadings', tmpDoc);
+      // Meteor.call('logReadings', tmpDoc);
+      
+      var logfileMessageArray = [];
 
+      for (var prop in tmpDoc) {
+          if (prop != 'getAll') {
+            logfileMessageArray.push(prop, tmpDoc[prop]);
+          }
+      }
+
+      fs.appendFile("/home/pi/crucibleLog", logfileMessageArray.join()+'\n' , function(err) {
+        if(err) {
+          return console.log(err);
+        }
+        console.log("The file was saved!");
+      });
 
       messagePub.added('messages', Random.id(), tmpDoc);
     }
