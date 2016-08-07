@@ -95,7 +95,7 @@ var os = Meteor.npmRequire('os');
 
 
   serialPortThermo.on('data', Meteor.bindEnvironment(function(data) {
-    console.log("Direct from Thermo: " + data + "\n");
+    // console.log("Direct from Thermo: " + data + "\n");
     responseThermo = data;
   }));
 
@@ -121,15 +121,15 @@ var os = Meteor.npmRequire('os');
       // LEDBrightness=parsedData.Brightness;
 
       //writeToConsole();
-      console.log('Board Temp: ' + tempBoard +
-        "C\nTemp Setpoint: " + tempTarget +
-        " C\nChamber Temp: " + tempChamber +
-        " C\nFluid Temp: " + tempFluid +
-        " C\nPressure: " + pressure +
-        " psi\nPressure Setpoint: " + pressTarget +
-        " psi\nLux Setpoint: " + luxTarget +
-        " \nLUX: " + LUX +
-        "\nLED Brightness: " + Math.round(LEDBrightness));
+      // console.log('Board Temp: ' + tempBoard +
+      //   "C\nTemp Setpoint: " + tempTarget +
+      //   " C\nChamber Temp: " + tempChamber +
+      //   " C\nFluid Temp: " + tempFluid +
+      //   " C\nPressure: " + pressure +
+      //   " psi\nPressure Setpoint: " + pressTarget +
+      //   " psi\nLux Setpoint: " + luxTarget +
+      //   " \nLUX: " + LUX +
+      //   "\nLED Brightness: " + Math.round(LEDBrightness));
 
 
       controlCheck(luxTarget, LUX, pressTarget, pressure, tempTarget, tempFluid);
@@ -164,7 +164,7 @@ var os = Meteor.npmRequire('os');
         if(err) {
           return console.log(err);
         }
-        console.log("The file was saved!");
+        // console.log("The file was saved!");
       });
 
       messagePub.added('messages', Random.id(), tmpDoc);
@@ -185,7 +185,7 @@ var os = Meteor.npmRequire('os');
     updateArduino: function(luxPWM, v1, v2, v3, v4, todo) {
       var messageToArduino = "{\"luxPWM\":" + luxPWM + ",\"vS\":[" + v1 + "," + v2 + "," + v3 + "," + v4 + "],\"rst\":1,\"todo\":" + todo + "}";
       sendToArduino(new Buffer(messageToArduino));
-      console.log(messageToArduino);
+      // console.log(messageToArduino);
       //if (oldTempTarget!=tempTarget){
       oldTempTarget = tempTarget;
       Meteor.call('updateThermo', tempTarget);
@@ -196,18 +196,18 @@ var os = Meteor.npmRequire('os');
       if (ThermoScientific) {
         var messageThermo = "W SP " + tempSet + '\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
       if (Julabo) {
         var messageThermo = "out_sp_00 " + tempSet + '\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
     },
 
     textThermo: function(textThermo) {
       var messageThermo = textThermo + '\r\n';
-      console.log(messageThermo);
+      // console.log(messageThermo);
       sendToThermo(new Buffer(messageThermo));
     },
 
@@ -215,12 +215,12 @@ var os = Meteor.npmRequire('os');
       if (ThermoScientific) {
         var messageThermo = thermoRun + '\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
       if (Julabo) {
         var messageThermo = "out_mode_05 "+thermoRun+'\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
     },
 
@@ -228,12 +228,12 @@ var os = Meteor.npmRequire('os');
       if (ThermoScientific) {
         var messageThermo = 'R T1\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
       if (Julabo) {
         var messageThermo = "in_pv_00" + '\r\n';
         sendToThermo(new Buffer(messageThermo));
-        console.log(messageThermo);
+        // console.log(messageThermo);
       }
     },
 
