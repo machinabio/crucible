@@ -349,7 +349,7 @@ controlCheck = function(luxTarget, LUX, pressTarget, pressure, tempTarget, tempF
     operation += 1;
 
     //if (pressTarget-pressure<-.3){
-    if (pressTarget-pressure < 2) {
+    if (pressTarget-pressure < 0.2) {
       v1 = 0;
       v2 = 0;
       v3 = 0;
