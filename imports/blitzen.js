@@ -1,7 +1,10 @@
-import './peripherals.js'
+// TODO Refactor to remove depandancy on peripheral.js
+// TODO refactor for meteor 1.3+ (npm hacks vs native npm)
 
-var Blitzen = Meteor.npmRequire('blitzen');
-var database = new Blitzen.Database(Assets.absoluteFilePath('credentials-crucible.json'));
+import './peripherals.js';
+import 'blitzen';
+
+var database = new blitzen.Database(Assets.absoluteFilePath('credentials-crucible.json'));
 
 var entities = {
     organization_id: "d58983a1fd3aa3e8bf4e1ae4a7b2",

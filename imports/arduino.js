@@ -1,4 +1,5 @@
-import './blitzen.js';
+import { Meteor } from 'meteor/meteor';
+import './peripherals.js'
 
 var SerialPort = Meteor.npmRequire('serialport');
 

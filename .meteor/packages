@@ -5,10 +5,8 @@
 
 standard-app-packages
 twbs:bootstrap
-meteorhacks:npm
 
 
-npm-container
 standard-minifier-css
 standard-minifier-js
 ecmascript

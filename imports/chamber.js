@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor';
+import '/imports/peripherals.js';
+
 var hysteresisReset = true;
 var ventStatus = false;
 

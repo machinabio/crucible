@@ -1,5 +1,6 @@
-import './peripheral.js';
-import './PID.js';
+import { Meteor } from 'meteor/meteor';
+import '/imports/peripherals.js';
+import '/imports/PID.js';
 
 var initializing = true;
 var query = null;

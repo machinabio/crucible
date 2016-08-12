@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor';
+mport '/imports/peripherals.js';
+
 var responseThermo;
 var oldTime = 0;
 var tempBoard, tempChamber, tempTarget, tempFluid, pressure, pressTarget, LUX, luxTarget;
