@@ -1,106 +1,74 @@
-// TODO Refactor to remove depandancy on peripheral.js
-// TODO refactor for meteor 1.3+ (npm hacks vs native npm)
-
-import './peripherals.js';
+import { Meteor } from 'meteor/meteor';
+// Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
 import 'blitzen';
+
+const data360config = Meteor.settings.data360;
 
 var database = new blitzen.Database(Assets.absoluteFilePath('credentials-crucible.json'));
 
-var entities = {
-    organization_id: "d58983a1fd3aa3e8bf4e1ae4a7b2",
-    group_id: "2b8084cd855fa749b7113eba1849",
-    project_id: "2bbb4f6099676a77d70cfdc4254e"
+var log_to_data360 = function timerCallback() {
+    var thermolator = Peripherals.findOne({_id: 'thermolator'});
+    var chamber     = Peripherals.findOne({_id: 'chamber'});
+    var led         = Peripherals.findOne({_id: 'led'});
+    var timestamp   = Date.toISOString();
+
+    var readings = {
+        organizationId : data360config.organization_id,
+        groupId        : data360config.group_id,
+        projectId      : data360config.project_id,
+        readingList : [
+            {
+                sensorId: 'board_temp',
+                ts: timestamp,
+                val: chamber.boardTemp
+            },
+            {
+                sensorId: 'chamber_temp',
+                ts: timestamp,
+                val: chamber.chamberTemp
+            },
+            {
+                sensorId: 'thermolator_temp',
+                ts: timestamp,
+                val: thermolator.temperature
+            },
+            {
+                sensorId: 'thermolator_temp_target',
+                ts: timestamp,
+                val: thermolator.setpoint
+            },
+            {
+                sensorId: 'chamber_pressure',
+                ts: timestamp,
+                val: chamber.pressure
+            },
+            {
+                sensorId: 'chamber_pressure_target',
+                ts: timestamp,
+                val: chamber.pressureSetpoint
+            },
+            {
+                sensorId: 'LED_lux',
+                ts: timestamp,
+                val: led.brightness,
+            },
+            {
+                sensorId: 'LED_lux_target',
+                ts: timestamp,
+                val: led.setpoint
+            },
+            {
+                sensorId: 'LED_duty_cycle',
+                ts: timestamp,
+                val: led.dutyCycle
+            }
+        ]
+    };
+    database.connect()
+        .then(database.postReadings(readings));
 };
 
-var logReadings = function logReadings(tmpDoc) {
-    var timestamp_before = tmpDoc.created.toISOString();
-    var timestamp = tmpDoc.created.toISOString();
-
-    database.connect().then(function(result) {
-        var params = {
-            organizationId: entities.organization_id,
-            groupId: entities.group_id,
-            projectId: entities.project_id,
-            readingList: [
-                {
-                    sensorId: 'boardTemp',
-                    ts: timestamp,
-                    val: tmpDoc.tempBoard
-                },
-                {
-                    sensorId: 'chamberTemp',
-                    ts: timestamp,
-                    val: tmpDoc.tempChamber
-                },
-                {
-                    sensorId: 'fluidTemp',
-                    ts: timestamp,
-                    val: tmpDoc.tempFluid
-                },
-                {
-                    sensorId: 'fluidTargetTemp',
-                    ts: timestamp,
-                    val: tmpDoc.tempTarget
-                },
-                {
-                    sensorId: 'pressure',
-                    ts: timestamp,
-                    val: tmpDoc.pressure
-                },
-                {
-                    sensorId: 'targetPressure',
-                    ts: timestamp,
-                    val: tmpDoc.pressTarget
-                },
-                {
-                    sensorId: 'lux',
-                    ts: timestamp,
-                    val: tmpDoc.lux,
-                },
-                {
-                    sensorId: 'luxTarget',
-                    ts: timestamp,
-                    val: tmpDoc.luxTarget
-                },
-                {
-                    sensorId: 'LEDPower',
-                    ts: timestamp,
-                    val: tmpDoc.LEDBrightness
-                }
-            ]
-        };
-        database.postReadings(params);
-    });
-}
-
-var timerCallback = function timerCallback() {
-        Peripherals.upsert({_id: 'chamber'}, { $set : { boardTemp  : tempBoard}});
-        Peripherals.upsert({_id: 'chamber'}, { $set : { pressure   : pressure}});
-        Peripherals.upsert({_id: 'led'}, { $set : {brightness: lux}});
-
-        var tempFluid   = Peripherals.findOne({_id: 'thermolator'}).temperature;
-        var tempTarget  = Peripherals.findOne({_id: 'thermolator'}).setpoint;
-        var pressTarget = Peripherals.findOne({_id: 'chamber'}).setpoint;
-        var luxTarget   = ;
-
-    var tmpDoc = {
-        created: new Date(),
-        messageType: 'getAll',
-        tempBoard  : Peripherals.findOne({_id: 'chamber'}).boardTemp,
-        tempChamber: Peripherals.findOne({_id: 'chamber'}).chamberTemp,
-        tempFluid  : Peripherals.findOne({_id: 'thermolator'}).temperature,
-        tempTarget : Peripherals.findOne({_id: 'thermolator'}).setpoint,
-        pressure   : Peripherals.findOne({_id: 'chamber'}).pressure,
-        pressTarget: Peripherals.findOne({_id: 'chamber'}).pressureSetpoint,,
-        lux        : Peripherals.findOne({_id: 'led'}).brightness,
-        luxTarget  : Peripherals.findOne({_id: 'led'}).setpoint,
-        LEDBrightness: Math.round(Peripherals.findOne({_id: 'led'}).dutyCycle)
-    };
-
-    logReadings(tmpDoc);
-}
-
 // log data to blitzen every second
-var query = Meteor.setInterval(timerCallback, 1000);
+var query = Meteor.setInterval(log_to_data360, 1000);
 
 export default logReadings;

@@ -1,57 +1,63 @@
 import { Meteor } from 'meteor/meteor';
-import './peripherals.js'
+import { EJSON } from 'meteor/ejson';
+// Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
+import '/imports/peripherals.js';
+import 'serialport';
+import 'child_process';
 
-var SerialPort = Meteor.npmRequire('serialport');
+var resetArduino = function resetArdiuno() {
+  var exec = child_process.exec;
+  console.log('>>>>>> Resetting arduino');
+  exec(Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
+    console.log('......Finished');
+    console.log('......Stdout: ' + stdout);
+    console.log('......Error: ' + stderr);
+  });
+};
+Meteor.startup(resetArduino);
 
-var serialPort = new SerialPort.SerialPort('/dev/ttyS0', {
+if (!Meteor.settings.debug) {
+  var serialPort = new serialport.SerialPort('/dev/ttyS0', {
     baudrate: 115200,
     parser: SerialPort.parsers.readline('\r\n')
-});
+  });
 
-serialPort.on('open', function onOpen() {
+  serialPort.on('open', function onOpen() {
     console.log('Port Arduino open');
-});
+  });
 
-serialPort.on('data', Meteor.bindEnvironment(function onData(data) {
-    var parsedData = JSON.parse(data);
-    if (parsedData.messageType === 'getAll') {
-        tempBoard = parsedData.TempBoard;
-        tempChamber = parsedData.TempChamber;
-        pressure = parsedData.Pressure;
-        lux = parsedData.lux;
+  serialPort.on('data', Meteor.bindEnvironment(function onData(data) {
+    var parsedData = EJSON.parse(data);
+    Peripherals.update({ _id: 'chamber' }, {
+      $set: {
+        chamberTemp: parsedData.TempChamber,
+        boardTemp: parsedData.TempBoard,
+        pressure: parsedData.Pressure
+      }
+    });
+    Peripherals.update({ _id: 'led' }, { $set: { brightness: parsedData.lux } });
+  }));
 
-        Peripherals.upsert({_id: 'chamber'}, { $set : { chamberTemp: tempChamber}});
-        Peripherals.upsert({_id: 'chamber'}, { $set : { boardTemp  : tempBoard}});
-        Peripherals.upsert({_id: 'chamber'}, { $set : { pressure   : pressure}});
-        Peripherals.upsert({_id: 'led'}, { $set : {brightness: lux}});
+  var updateArduino = function updateArduino() {
+    var chamber = Peripherals.findOne({ _id: 'chamber' });
 
-        var tempFluid   = Peripherals.findOne({_id: 'thermolator'}).temperature;
-        var tempTarget  = Peripherals.findOne({_id: 'thermolator'}).setpoint;
-        var pressTarget = Peripherals.findOne({_id: 'chamber'}).setpoint;
-        var luxTarget   = Peripherals.findOne({_id: 'led'}).setpoint;
+    var message = {
+      luxPWM: Peripherals.findOne({ _id: 'led' }).dutyCycle * 2.55, // normalizes 0-100 to 0-255
+      vS: [chamber.v1, chamber.v2, chamber.v3, chamber.v4],
+      rst: 1,
+      todo: 3
+    };
+    // the todo field controls what the arduino does.
+    //  0 = read pressure and Lux
+    //  1 = read pressure, update valve PWM value
+    //  2 = read pressure, read lux, and update LED PWM value
+    //  3 = read pressure, read lux, and update LED and valve PWM values
 
-        controlCheck(luxTarget, lux, pressTarget, pressure, tempTarget, tempFluid);
-    }
-}));
+    serialPort.write(Buffer.from(EJSON.stringfy(message)));
+  };
 
-var updateArduino = function updateArduino(luxPWM, v1, v2, v3, v4, todo) {
-        luxPWM = luxPWM ? luxPWM : Peripherals.findOne({_id: 'led'}).dutyCycle * 2.55 // normalizes 0-100 to 0-255
-        v1     = v1     ? v1     : Peripherals.findOne({_id: 'chamber'}).v1;
-        v2     = v2     ? v2     : Peripherals.findOne({_id: 'chamber'}).v2;
-        v3     = v3     ? v3     : Peripherals.findOne({_id: 'chamber'}).v3;
-        v4     = v4     ? v4     : Peripherals.findOne({_id: 'chamber'}).v4;
-
-        var message = {
-        	luxPWM : luxPWWM,
-                vS : [ v1, v2, v3, v4 ],
-               rst : 1,
-              todo : todo
-        };
-
-        serialPort.write(new Buffer(JSON.stringfy(message)));
-    }
-});
-
-var query = Meteor.setInterval(updateArduino, 1000);
+  // Send data to Arduino
+  var query = Meteor.setInterval(updateArduino, 1000);
+}
 
 export default updateArduino;

@@ -1,40 +1,44 @@
-import { Meteor } from 'meteor/meteor';
 import '/imports/peripherals.js';
-import '/imports/PID.js';
 
-var initializing = true;
-var query = null;
-var kP=.0008;
+var intializing = true;
+const peripheral_name = 'led';
+const              kP = 0.0008;
 
 // make sure the led record is configured
-var record = Peripherals.findOne({_id: 'led'});
-if (!record) {
-	record = {
-		_id: 'led',    
-		setpoint: 0,   // the setpoint in lux
-		brightness: 0, // the brightness in lux
-		dutyCycle: 0,  // the pwm duty cycle 0-100
-	};
-	Peripheral.upsert({_id: 'led'}, { $set : record});
+if (!Peripherals.findOne({_id: peripheral_name})) {
+	Peripheral.insert({ _id : peripheral_name,    
+                   setpoint : 0, // the setpoint in Lux
+                 brightness : 0, // the brightness in Lux
+                  dutyCycle : 0  // the pwm duty cycle 0-100
+    });
 }
 
-var luxControl = function luxControl(luxActual, luxTarget, ledPower){
-    ledPower  = ledPower  ? ledPower  : Peripherals.findOne({_id: 'led'}).dutyCycle;
-    luxTarget = luxTarget ? luxTarget : Peripherals.findOne({_id: 'led'}).setpoint;
-    luxActual = luxActual ? luxActual : Peripherals.findOne({_id: 'led'}).brightness;
+var set_lux = function set_lux(){
+    var led = Peripherals.findOne({_id: peripheral_name});
+    var ledPower  = led.dutyCycle;
+    var luxTarget = led.setpoint;
+    var luxActual = led.brightness;
 
-    if (ledPower>10 && luxActual==0) luxActual=30000; // corrects for an overflow error?
+    if ( ledPower>10 && luxActual==0 ) luxActual=30000; // corrects for an overflow error?
 
-    var luxError= luxTarget - luxActual;
+    var luxError = luxTarget-luxActual;
    
     ledPower += kP*luxError;
 
-    if (ledPower < 0) ledPower=0;
-    if (ledPower > 100) ledPower=70;
+    if (ledPower<0) ledPower=0;
+    if (ledPower>100) ledPower=70;
 
-    Peripheral.upsert({_id: 'led'}, { $set : {dutyCycle : ledPower}});
+    Peripheral.update({_id: peripheral_name}, { $set : {dutyCycle : ledPower}});
+};
 
-    return ledPower;
-}
+var callbacks = {
+    changed: function observe_led (id, fields) {
+        if (initializing) break;
+        var changed_fields = fields.getOwnPropertyNames();
+        if (changed_fields.includes('setpoint', 'brightness')) {
+            set_lux();
+        }
+};
 
-var query = Meteor.setInterval(luxControl, 1000);
+var query = Peripherals.find({_id: peripheral_name}).observeChanges(callbacks);
+intializing = false;
