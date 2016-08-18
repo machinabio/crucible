@@ -66,12 +66,15 @@ if (!Meteor.settings.debug) {
   changed: function changed(id, fields) {
     if (initializing) return;
     var thermolator = Peripherals.findOne({ id: id });
-    for (let field of fields.getOwnPropertyNames()) {
+    var changed_fields = Object.getOwnPropertyNames(fields);
+    for (let field of changed_fields) {
       switch (field) {
         case 'running':
+          console.log('toggled thermolator running');
           fields.running ? thermolator_on() : thermolator_off();
           break;
         case 'setpoint':
+          console.log('updated thermolator setpoint');
           update_setpoint();
           break;
         default:

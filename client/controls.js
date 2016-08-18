@@ -1,18 +1,108 @@
 import '/imports/peripherals.js';
 
-Template.controls.events(
-  {
-    'submit form' : function(event , template) {
-      var setPoint = template.find('#setPoint').value;
-      Peripherals.update({ _id: 'thermolator' }, { $set: { setpoint: setPoint } });
-      event.preventDefault();
+Template.controls.events({
+  'submit #thermolator_setpoint'(event , template) {
+    var setpoint = template.find('#temp_setpoint').value;
+    Peripherals.update({ _id: 'thermolator' }, { $set: { setpoint: setpoint } });
+    event.preventDefault();
+  },
+
+  'submit #led_setpoint'(event , template) {
+    var setpoint = template.find('#lux_setpoint').value;
+    Peripherals.update({ _id: 'led' }, { $set: { setpoint: setpoint } });
+    event.preventDefault();
+  },
+
+  'submit #chamber_setpoint'(event , template) {
+    var setpoint = template.find('#pressure_setpoint').value;
+    Peripherals.update({ _id: 'chamber' }, { $set: { setpoint: setpoint } });
+    event.preventDefault();
+  },
+
+  'click #thermolator_run'() {
+    Peripherals.update({ _id: 'thermolator' }, { $set: { running: true } });
+  },
+
+  'click #thermolator_stop'() {
+    Peripherals.update({ _id: 'thermolator' }, { $set: { running: false } });
+  },
+
+  'click #chamber_run'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'run' } });
+  },
+
+  'click #chamber_vent'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'vent' } });
+  },
+
+  'click #chamber_hold'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'hold' } });
+  }
+});
+
+Template.controls.helpers({
+  thermolator() {
+    return Peripherals.findOne({_id : 'thermolator'});
+  },
+
+  led() {
+    return Peripherals.findOne({_id : 'led'});
+  },
+
+  chamber() {
+    return Peripherals.findOne({_id : 'chamber'});
+  },
+
+  stop_attributes() {
+    var state = Peripherals.findOne({_id : 'thermolator'}).running;
+    return {
+      class:  state ? 'ui inverted red button' : 'ui red button'
+    };
+  },
+
+  run_attributes() {
+    var state = Peripherals.findOne({_id : 'thermolator'}).running;
+    return {
+      class:  state ? 'ui green button' : 'ui inverted green button'
+    };
+  },
+
+  chamber_run_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'run') {
+      attributes = "ui green button"
+    } else {
+      attributes = "ui inverted green button";
     }
-  });
+    return {
+      class:  attributes
+    };
+  },
 
-Template.controls.currentTemp = function () {
-    return Peripherals.findOne({_id : 'thermolator'}).temperature;
-  };
+  chamber_vent_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'vent') {
+      attributes = "ui teal button"
+    } else {
+      attributes = "ui inverted teal button";
+    }
+    return {
+      class:  attributes
+    };
+  },
 
-Template.controls.setPoint = function () {
-    return Peripherals.findOne({_id : 'thermolator'}).setpoint;
-  };
+  chamber_hold_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'hold') {
+      attributes = "ui red button"
+    } else {
+      attributes = "ui inverted red button";
+    }
+
+    return {
+      class:  attributes
+    };
+  }
+});
+
+

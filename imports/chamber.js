@@ -13,7 +13,7 @@ if (!Peripherals.findOne({ _id: peripheral_name })) {
                          v2 : 0,     // the pwm duty cycle 0-100
                          v3 : 0,     // the pwm duty cycle 0-100
                          v4 : 0,     // the pwm duty cycle 0-100
-                      state : 'vent' // can be 'vent' or 'run'
+                      state : 'vent' // can be 'vent','run' or 'hold'
     });
 }
 
@@ -62,8 +62,11 @@ var set_valves = function set_valves() {
     var callbacks = {
         changed: function observe_chamber (id, fields) {
             if (initializing) return;
-            var changed_fields = fields.getOwnPropertyNames();
-            if (changed_fields.includes('setpoint','pressure','state')) {
+            var changed_fields = Object.getOwnPropertyNames(fields);
+
+            if (changed_fields.indexOf('setpoint')    != -1 
+                || changed_fields.indexOf('pressure') != -1
+                || changed_fields.indexOf('state')    != -1)  {
                 set_valves();
             }
         }

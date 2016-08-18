@@ -1,12 +1,47 @@
 
 <template name="controls">
     <h4>
-    Chamber Temperature
+    Thermolator
     </h4>
-    Current temperature is {{currentTemp}} <br>
-    Setpoint is {{setPoint}}
-    <form>
-        <input style="width: 100px" id="setPoint" type="text" placeholder="Temp"/>
+    Current temperature is {{thermolator.temperature}} &deg;C<br>
+    Setpoint is {{thermolator.setpoint}} &deg;C
+    <form id='thermolator_setpoint'>
+        <input style="width: 100px" id="temp_setpoint" type="text" placeholder="Temp Setpoint"/>
         <input type="submit" value="Set"/>
     </form>
+    <br>
+    <div class="ui buttons mini">
+  		<button {{stop_attributes}} id="thermolator_stop">Stop</button>
+  		<div class="or"></div>
+  		<button {{run_attributes}} id="thermolator_run">Run</button>
+	</div>
+
+    <h4>
+    LED
+    </h4>
+    Current LED brightness is {{led.brightness}} Lux<br>
+    Setpoint is {{led.setpoint}} Lux
+    <form id='led_setpoint'>
+        <input style="width: 100px" id="lux_setpoint" type="text" placeholder="Lux Setpoint"/>
+        <input type="submit" value="Set"/>
+    </form>
+
+    <h4>
+    Chamber
+    </h4>
+    Current pressure is {{chamber.pressure}} PSI<br>
+    Setpoint is {{chamber.setpoint}} PSI
+    <form id='chamber_setpoint'>
+        <input style="width: 100px" id="pressure_setpoint" type="text" placeholder="PSI Setpoint"/>
+        <input type="submit" value="Set"/>
+    </form>
+    <br>
+    <div class="ui buttons mini">
+  		<button {{chamber_vent_attributes}} id="chamber_vent">Vent</button>
+  		<div class="or"></div>
+  		<button {{chamber_run_attributes}} id="chamber_run">Run</button>
+  		<div class="or"></div>
+  		<button {{chamber_hold_attributes}} id="chamber_hold">Hold</button>
+	</div>
+
 </template>

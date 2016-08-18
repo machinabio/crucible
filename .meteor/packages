@@ -7,8 +7,11 @@ standard-app-packages
 twbs:bootstrap
 
 
-standard-minifier-css
 standard-minifier-js
 ecmascript
 autopublish
 insecure
+semantic:ui
+juliancwirko:postcss
+less
+jquery
