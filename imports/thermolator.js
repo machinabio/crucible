@@ -9,7 +9,7 @@ var intializing = true;
 
 // Initialize the thermolator now
 if (!Peripherals.findOne({ _id: peripheral_name })) {
-  Peripheral.insert({
+  Peripherals.insert({
     _id: peripheral_name,
     temperature: 25, // in C
     setpoint: 25, // in C
@@ -59,11 +59,12 @@ if (!Meteor.settings.debug) {
     var messageThermo = ThermoScientific ? 'R T1' : 'in_pv_00';
     send_to_thermolator(messageThermo);
   };
-}
 
-Peripherals.find({ _id: 'thermolator' }).observeChanges {
-  changed: funtion changed(id, fields) {
-    if (initializing) break;
+  thermolator_off('reset'); // make sure the thermolator is not running)
+
+  Peripherals.find({ _id: 'thermolator' }).observeChanges({
+  changed: function changed(id, fields) {
+    if (initializing) return;
     var thermolator = Peripherals.findOne({ id: id });
     for (let field of fields.getOwnPropertyNames()) {
       switch (field) {
@@ -78,11 +79,10 @@ Peripherals.find({ _id: 'thermolator' }).observeChanges {
       }
     }
   }
-}
-
-thermolator_off('reset'); // make sure the thermolator is not running)
+});
 
 // read ping the thermolator's temperature every second
 var query = Meteor.setInterval(get_temperature, 1000);
+}
 
 initializing = false;

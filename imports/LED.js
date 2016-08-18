@@ -6,7 +6,7 @@ const              kP = 0.0008;
 
 // make sure the led record is configured
 if (!Peripherals.findOne({_id: peripheral_name})) {
-	Peripheral.insert({ _id : peripheral_name,    
+	Peripherals.insert({ _id : peripheral_name,    
                    setpoint : 0, // the setpoint in Lux
                  brightness : 0, // the brightness in Lux
                   dutyCycle : 0  // the pwm duty cycle 0-100
@@ -28,16 +28,18 @@ var set_lux = function set_lux(){
     if (ledPower<0) ledPower=0;
     if (ledPower>100) ledPower=70;
 
-    Peripheral.update({_id: peripheral_name}, { $set : {dutyCycle : ledPower}});
+    Peripherals.update({_id: peripheral_name}, { $set : {dutyCycle : ledPower}});
 };
 
 var callbacks = {
     changed: function observe_led (id, fields) {
-        if (initializing) break;
+        if (initializing) return;
         var changed_fields = fields.getOwnPropertyNames();
         if (changed_fields.includes('setpoint', 'brightness')) {
+            console.log('Change in LED field '+fields);
             set_lux();
         }
+    }
 };
 
 var query = Peripherals.find({_id: peripheral_name}).observeChanges(callbacks);

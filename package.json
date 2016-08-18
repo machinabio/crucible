@@ -1,0 +1,23 @@
+{
+  "name": "crucible",
+  "version": "1.0.0",
+  "description": "Meteor to Raspberry Pi to Arduino Integration",
+  "main": "index.js",
+  "dependencies": {
+    "serialport": "^4.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://luzlab@github.com/luzlab/crucible.git"
+  },
+  "author": "Carlo Quinonez",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/luzlab/crucible/issues"
+  },
+  "homepage": "https://github.com/luzlab/crucible#readme"
+}

@@ -6,7 +6,7 @@ const peripheral_name = 'chamber';
 var intializing = true;
 
 if (!Peripherals.findOne({ _id: peripheral_name })) {
-    Peripheral.insert({ _id : peripheral_name,
+    Peripherals.insert({ _id : peripheral_name,
                    setpoint : 0,     // the setpoint in PSI (-14..0)
                    pressure : 0,     // the current pressure in PSI
                          v1 : 0,     // the pwm duty cycle 0-100
@@ -51,6 +51,9 @@ var set_valves = function set_valves() {
         case 'vent':
             v1 = 255;
             break;
+        case 'hold':
+            // do something
+            break;
     }
     Peripherals.update({_id: peripheral_name},  { $set :  { v1 : v1, 
                                                             v2 : v2, 
@@ -58,11 +61,12 @@ var set_valves = function set_valves() {
                                                             v4 : v4 }});
     var callbacks = {
         changed: function observe_chamber (id, fields) {
-            if (initializing) break;
+            if (initializing) return;
             var changed_fields = fields.getOwnPropertyNames();
             if (changed_fields.includes('setpoint','pressure','state')) {
                 set_valves();
             }
+        }
     };
 
     var query = Peripherals.find({_id: peripheral_name}).observeChanges(callbacks);

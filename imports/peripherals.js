@@ -1,5 +1,3 @@
 import { Mongo } from 'meteor/mongo'
 
-var Peripherals = new Mongo.Collection('peripherals');
-
-export default Peripherals;
+export default Peripherals = new Mongo.Collection('peripherals');
