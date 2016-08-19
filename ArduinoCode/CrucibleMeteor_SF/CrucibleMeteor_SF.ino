@@ -27,7 +27,6 @@ Adafruit_TSL2561_Unified tsl = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 1234
 #include <SPI.h>
 #include <MAX31865.h>
 
-
 ///////////
 //Variables
 ///////////
