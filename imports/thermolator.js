@@ -1,5 +1,5 @@
 import '/imports/peripherals.js';
-import 'serialport';
+import serialport from 'serialport';
 
 const peripheral_name = 'thermolator';
 const ThermoScientific = false; // if this is false, we assume there's a Julabo thermolator connected

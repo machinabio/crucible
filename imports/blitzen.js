@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 // Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
-import 'blitzen';
+import blitzen from 'blitzen';
 
 const data360config = Meteor.settings.data360;
 
