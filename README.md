@@ -15,10 +15,19 @@ The json file should have:
 	"data360": {
 		...
 	} ,
-	"debug": <true or false>
-
+	"arduino": {
+		"baudrate" : "XX",
+		"port" :"/dev/XX"
+	},
+	"thermolator": {
+		"baudrate" : "XX",
+		"port" :"/dev/XX",
+		"model" : "XX" 
+	}
 }
 ```
+
+The thermolator model can be either `thermoscientific` or `julabo`
 
 The debug setting turns allows running crucible without a pi.
 

@@ -2,7 +2,6 @@ import '/imports/peripherals.js';
 import serialport from 'serialport';
 
 const peripheral_name = 'thermolator';
-const ThermoScientific = false; // if this is false, we assume there's a Julabo thermolator connected
 
 // Turn off callbacks during initialization
 var intializing = true;
@@ -17,9 +16,12 @@ if (!Peripherals.findOne({ _id: peripheral_name })) {
   });
 }
 
-if (!Meteor.settings.debug) {
-  var serialPort = new serialport.SerialPort('/dev/ttyUSB0', {
-    baudrate: 19200,
+if (Meteor.settings.thermolator) {
+  const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
+  console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");
+
+  var serialPort = new serialport.SerialPort(Meteor.settings.thermolator.port, {
+    baudrate: Meteor.settings.thermolator.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
 
@@ -38,20 +40,18 @@ if (!Meteor.settings.debug) {
 
   var update_setpoint = function update_setpoint() {
     var tempSet = Peripherals.findOne({ _id: peripheral_name }).setpoint;
-    var messageThermo = ThermoScientific ? 'W SP ' + tempSet :
-      'out_sp_00 ' + tempSet;
+    var messageThermo = ThermoScientific ? 'W SP ': 'out_sp_00 ';
+    messageThermo += tempSet;
     send_to_thermolator(messageThermo);
   };
 
   var thermolator_off = function thermolator_off() {
-    var command = ThermoScientific ? 'W RR -1' :
-      'out_mode_05 0';
+    var command = ThermoScientific ? 'W RR -1' : 'out_mode_05 0';
     send_to_thermolator(command);
   };
 
   var thermolator_on = function thermolator_on() {
-    var command = ThermoScientific ? 'W GO 1' :
-      'out_mode_05 1';
+    var command = ThermoScientific ? 'W GO 1' : 'out_mode_05 1';
     send_to_thermolator(command);
   };
 

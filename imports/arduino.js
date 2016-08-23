@@ -16,9 +16,9 @@ var resetArduino = function resetArdiuno() {
 };
 Meteor.startup(resetArduino);
 
-if (!Meteor.settings.debug) {
-  var serialPort = new serialport.SerialPort('/dev/ttyS0', {
-    baudrate: 115200,
+if (Meteor.settings.arduino) {
+  var serialPort = new serialport.SerialPort(Meteor.settings.arduino.port, {
+    baudrate: Meteor.settings.arduino.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
 
