@@ -1,5 +1,5 @@
 import '/imports/peripherals.js';
-import serialport from 'serialport';
+var serialport = require('serialport');
 
 const peripheral_name = 'thermolator';
 

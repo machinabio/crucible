@@ -1,6 +1,6 @@
 import '/imports/peripherals.js';
 
-var intializing = true;
+var       intializing = true;
 const peripheral_name = 'led';
 const              kP = 0.0008;
 

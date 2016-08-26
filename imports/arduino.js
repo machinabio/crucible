@@ -2,11 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { EJSON } from 'meteor/ejson';
 // Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
 import '/imports/peripherals.js';
-import serialport from 'serialport';
-import child_process from 'child_process';
+
+var serialport = require('serialport');
+var exec = require('child_process').exec;
 
 var resetArduino = function resetArdiuno() {
-  var exec = child_process.exec;
   console.log('>>>>>> Resetting arduino');
   exec(Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
     console.log('......Finished');
