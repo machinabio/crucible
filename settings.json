@@ -1,0 +1,18 @@
+{
+    "data360": {
+    	"client_id" : "uISacv7cJCHrwmAIp3CTaCBoCHM3EPBb",
+        "client_secret": "UkjJlnmGYihzbiIl" ,
+    	"organization_id": "d58983a1fd3aa3e8bf4e1ae4a7b2",
+    	"group_id": "2b8084cd855fa749b7113eba1849",
+    	"project_id:": "2bbb4f6099676a77d70cfdc4254e"
+    },
+    "arduino": {
+    	"port" : "/dev/ttyS0",
+    	"baudrate" : "115200"
+    },
+    "thermolator": {
+    	"port" : "/dev/ttyUSB0",
+    	"baudrate" : "19200",
+    	"type": "julaboo"
+    }
+}
