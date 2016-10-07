@@ -3,7 +3,11 @@ import { EJSON } from 'meteor/ejson';
 // Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
 import '/imports/peripherals.js';
 
-var serialport = require('serialport');
+var SerialPort = require('serialport');
+if (process.env.NODE_ENV == 'development') {
+  SerialPort = require('virtual-serialport');
+}
+
 var exec = require('child_process').exec;
 
 var resetArduino = function resetArdiuno() {
@@ -17,16 +21,16 @@ var resetArduino = function resetArdiuno() {
 Meteor.startup(resetArduino);
 
 if (Meteor.settings.arduino) {
-  var serialPort = new serialport.SerialPort(Meteor.settings.arduino.port, {
+  var port = new SerialPort(Meteor.settings.arduino.port, {
     baudrate: Meteor.settings.arduino.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
 
-  serialPort.on('open', function onOpen() {
+  port.on('open', function onOpen() {
     console.log('Port Arduino open');
   });
 
-  serialPort.on('data', Meteor.bindEnvironment(function onData(data) {
+  port.on('data', Meteor.bindEnvironment(function onData(data) {
     var parsedData = EJSON.parse(data);
     Peripherals.update({ _id: 'chamber' }, {
       $set: {
@@ -40,9 +44,10 @@ if (Meteor.settings.arduino) {
 
   var updateArduino = function updateArduino() {
     var chamber = Peripherals.findOne({ _id: 'chamber' });
+    var led = Peripherals.findOne({ _id: 'led' })
 
     var message = {
-      luxPWM: Peripherals.findOne({ _id: 'led' }).dutyCycle * 2.55, // normalizes 0-100 to 0-255
+      luxPWM: led.dutyCycle * 2.55, // normalizes 0-100 to 0-255
       vS: [chamber.v1, chamber.v2, chamber.v3, chamber.v4],
       rst: 1,
       todo: 3
@@ -53,7 +58,7 @@ if (Meteor.settings.arduino) {
     //  2 = read pressure, read lux, and update LED PWM value
     //  3 = read pressure, read lux, and update LED and valve PWM values
 
-    serialPort.write(Buffer.from(EJSON.stringfy(message)));
+    port.write(Buffer.from(EJSON.stringify(message)));
   };
 
   // Send data to Arduino

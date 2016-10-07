@@ -1,5 +1,9 @@
 import '/imports/peripherals.js';
-var serialport = require('serialport');
+
+var SerialPort = require('serialport');
+if (process.env.NODE_ENV == 'development') {
+  SerialPort = require('virtual-serialport');
+}
 
 const peripheral_name = 'thermolator';
 
@@ -20,22 +24,22 @@ if (Meteor.settings.thermolator) {
   const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
   console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");
 
-  var serialPort = new serialport.SerialPort(Meteor.settings.thermolator.port, {
+  var port = new SerialPort(Meteor.settings.thermolator.port, {
     baudrate: Meteor.settings.thermolator.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
 
-  serialPort.on('open', function() {
+  port.on('open', function() {
     console.log('Port Thermo open');
   });
 
-  serialPort.on('data', Meteor.bindEnvironment(function(data) {
+  port.on('data', Meteor.bindEnvironment(function(data) {
     var reading = Number.parseFloat(data);
     if (reading) Peripherals.update({ _id: peripheral_name }, { $set: { temperature: reading } });
   }));
 
   var send_to_thermolator = function send_to_thermolator(message) {
-    serialPort.write(Buffer.from(message + '\r\n'));
+    port.write(Buffer.from(message + '\r\n'));
   };
 
   var update_setpoint = function update_setpoint() {
@@ -60,8 +64,8 @@ if (Meteor.settings.thermolator) {
     send_to_thermolator(messageThermo);
   };
 
-  thermolator_off('reset'); // make sure the thermolator is not running)
-
+  thermolator_off();
+  
   Peripherals.find({ _id: 'thermolator' }).observeChanges({
   changed: function changed(id, fields) {
     if (initializing) return;

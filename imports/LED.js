@@ -1,4 +1,5 @@
 import '/imports/peripherals.js';
+import '/imports/arduino.js';
 
 var       intializing = true;
 const peripheral_name = 'led';

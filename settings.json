@@ -13,6 +13,6 @@
     "thermolator": {
     	"port" : "/dev/ttyUSB0",
     	"baudrate" : "19200",
-    	"type": "julaboo"
+    	"model": "julaboo"
     }
 }

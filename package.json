@@ -5,14 +5,20 @@
   "main": "index.js",
   "dependencies": {
     "blitzen": "github:alextessier/blitzen-nodejs",
-    "serialport": "^4.0.1"
+    "serialport": "^4.0.3",
+    "virtual-serialport": "^0.2.1",
+    "virtual-serialport": "https://github.com/luzlab/virtual-serialport.git#master"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1"
   },
   "postcss": {
     "plugins": {
-      "autoprefixer": {"browsers": ["last 2 versions"]}
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      }
     }
   },
   "scripts": {
@@ -20,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://luzlab@github.com/luzlab/crucible.git"
+    "url": "https://github.com/luzlab/crucible.git"
   },
   "author": "Carlo Quinonez",
   "license": "GPL-2.0",

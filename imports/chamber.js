@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import '/imports/peripherals.js';
 import '/imports/PID.js';
+import '/imports/arduino.js';
 
 const peripheral_name = 'chamber';
 var intializing = true;
