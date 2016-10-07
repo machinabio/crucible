@@ -15,5 +15,5 @@
     	"baudrate" : "19200",
     	"model": "julaboo"
     },
-    "debug": true
+    "logging": true
 }
