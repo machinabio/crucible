@@ -1,10 +1,5 @@
 import '/imports/peripherals.js';
 
-var SerialPort = require('serialport');
-if (process.env.NODE_ENV == 'development') {
-  SerialPort = require('virtual-serialport');
-}
-
 const peripheral_name = 'thermolator';
 
 // Turn off callbacks during initialization
@@ -21,6 +16,12 @@ if (!Peripherals.findOne({ _id: peripheral_name })) {
 }
 
 if (Meteor.settings.thermolator) {
+  var SerialPort = require('serialport');
+  if (process.env.NODE_ENV == 'development') {
+    console.log('Using virtual serialport for thermolator');
+    SerialPort = require('virtual-serialport');
+  }
+
   const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
   console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");
 
@@ -35,16 +36,20 @@ if (Meteor.settings.thermolator) {
 
   port.on('data', Meteor.bindEnvironment(function(data) {
     var reading = Number.parseFloat(data);
-    if (reading) Peripherals.update({ _id: peripheral_name }, { $set: { temperature: reading } });
+    if (reading) {
+      Peripherals.update({ _id: peripheral_name }, { $set: { temperature: reading } });
+      if (Meteor.settings.logging) console.log('Received data from thermolator ', reading);
+    }
   }));
 
   var send_to_thermolator = function send_to_thermolator(message) {
     port.write(Buffer.from(message + '\r\n'));
+    if (Meteor.settings.logging) console.log('Sending data to thermolator ', message);
   };
 
   var update_setpoint = function update_setpoint() {
     var tempSet = Peripherals.findOne({ _id: peripheral_name }).setpoint;
-    var messageThermo = ThermoScientific ? 'W SP ': 'out_sp_00 ';
+    var messageThermo = ThermoScientific ? 'W SP ' : 'out_sp_00 ';
     messageThermo += tempSet;
     send_to_thermolator(messageThermo);
   };
@@ -65,31 +70,31 @@ if (Meteor.settings.thermolator) {
   };
 
   thermolator_off();
-  
+
   Peripherals.find({ _id: 'thermolator' }).observeChanges({
-  changed: function changed(id, fields) {
-    if (initializing) return;
-    var thermolator = Peripherals.findOne({ id: id });
-    var changed_fields = Object.getOwnPropertyNames(fields);
-    for (let field of changed_fields) {
-      switch (field) {
-        case 'running':
-          console.log('toggled thermolator running');
-          fields.running ? thermolator_on() : thermolator_off();
-          break;
-        case 'setpoint':
-          console.log('updated thermolator setpoint');
-          update_setpoint();
-          break;
-        default:
-          // no relevant fields were changed
+    changed: function changed(id, fields) {
+      if (initializing) return;
+      var thermolator = Peripherals.findOne({ id: id });
+      var changed_fields = Object.getOwnPropertyNames(fields);
+      for (let field of changed_fields) {
+        switch (field) {
+          case 'running':
+            console.log('toggled thermolator running');
+            fields.running ? thermolator_on() : thermolator_off();
+            break;
+          case 'setpoint':
+            console.log('updated thermolator setpoint');
+            update_setpoint();
+            break;
+          default:
+            // no relevant fields were changed
+        }
       }
     }
-  }
-});
+  });
 
-// read ping the thermolator's temperature every second
-var query = Meteor.setInterval(get_temperature, 1000);
+  // read ping the thermolator's temperature every second
+  var query = Meteor.setInterval(get_temperature, 1000);
 }
 
 initializing = false;

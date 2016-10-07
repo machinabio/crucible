@@ -29,11 +29,13 @@ The json file should have:
     "baudrate" : "XX",
     "port" :"/dev/XX",
     "model" : "XX" 
-  }
+  },
+  "logging": false
 }
 ```
 
-The thermolator model can be either `thermoscientific` or `julabo`
+The thermolator model can be either `thermoscientific` or `julabo`.
+The logging setting controls whether the serial methods should be logged to the console.
 
 ## Development
 Starting the app with NODE_ENV set to development allows development in the absence of a Pi or any serial ports.

@@ -14,5 +14,6 @@
     	"port" : "/dev/ttyUSB0",
     	"baudrate" : "19200",
     	"model": "julaboo"
-    }
+    },
+    "debug": true
 }

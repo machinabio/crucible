@@ -3,24 +3,21 @@ import { EJSON } from 'meteor/ejson';
 // Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
 import '/imports/peripherals.js';
 
-var SerialPort = require('serialport');
-if (process.env.NODE_ENV == 'development') {
-  SerialPort = require('virtual-serialport');
-}
-
 var exec = require('child_process').exec;
 
-var resetArduino = function resetArdiuno() {
-  console.log('>>>>>> Resetting arduino');
-  exec(Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
-    console.log('......Finished');
-    console.log('......Stdout: ' + stdout);
-    console.log('......Error: ' + stderr);
-  });
-};
-Meteor.startup(resetArduino);
+exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
+  console.log('......Resetting arduino: Finished');
+  console.log('......Resetting arduino: Stdout: ' + stdout);
+  console.log('......Resetting arduino: Error: ' + stderr);
+});
 
 if (Meteor.settings.arduino) {
+  var SerialPort = require('serialport');
+  if (process.env.NODE_ENV == 'development') {
+    console.log('Using virtual serialport for arduino');
+    SerialPort = require('virtual-serialport');
+  }
+
   var port = new SerialPort(Meteor.settings.arduino.port, {
     baudrate: Meteor.settings.arduino.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
@@ -32,6 +29,7 @@ if (Meteor.settings.arduino) {
 
   port.on('data', Meteor.bindEnvironment(function onData(data) {
     var parsedData = EJSON.parse(data);
+    if (Meteor.settings.logging) console.log('Received data from arduino ',parsedData);
     Peripherals.update({ _id: 'chamber' }, {
       $set: {
         chamberTemp: parsedData.TempChamber,
@@ -59,6 +57,7 @@ if (Meteor.settings.arduino) {
     //  3 = read pressure, read lux, and update LED and valve PWM values
 
     port.write(Buffer.from(EJSON.stringify(message)));
+    if (Meteor.settings.logging) console.log('Sending data to arduino ',message);
   };
 
   // Send data to Arduino
