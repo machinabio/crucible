@@ -10,7 +10,7 @@ exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout
   console.log('......Resetting arduino: Stdout: ' + stdout);
   console.log('......Resetting arduino: Error: ' + stderr);
 });
-
+var port;
 if (Meteor.settings.arduino) {
   var SerialPort = require('serialport');
   if (process.env.NODE_ENV == 'development') {
@@ -18,7 +18,7 @@ if (Meteor.settings.arduino) {
     SerialPort = require('virtual-serialport');
   }
 
-  var port = new SerialPort.SerialPort(Meteor.settings.arduino.port, {
+  port = new SerialPort(Meteor.settings.arduino.port, {
     baudrate: Meteor.settings.arduino.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
@@ -56,7 +56,7 @@ if (Meteor.settings.arduino) {
     //  2 = read pressure, read lux, and update LED PWM value
     //  3 = read pressure, read lux, and update LED and valve PWM values
 
-    port.write(Buffer.from(EJSON.stringify(message)));
+    port.write(new Buffer.from(EJSON.stringify(message)));
     if (Meteor.settings.logging) console.log('Sending data to arduino ',message);
   };
 
