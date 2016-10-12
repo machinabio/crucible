@@ -25,7 +25,7 @@ if (Meteor.settings.thermolator) {
   const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
   console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");
 
-  var port = new SerialPort(Meteor.settings.thermolator.port, {
+  var port = new SerialPort.SerialPort(Meteor.settings.thermolator.port, {
     baudrate: Meteor.settings.thermolator.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });

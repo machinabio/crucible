@@ -18,7 +18,7 @@ if (Meteor.settings.arduino) {
     SerialPort = require('virtual-serialport');
   }
 
-  var port = new SerialPort(Meteor.settings.arduino.port, {
+  var port = new SerialPort.SerialPort(Meteor.settings.arduino.port, {
     baudrate: Meteor.settings.arduino.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
