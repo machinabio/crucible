@@ -27,7 +27,7 @@ if (Meteor.settings.thermolator) {
   const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
   console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");
 
-  port = new SerialPort(Meteor.settings.thermolator.port, {
+  port = new SerialPort.SerialPort(Meteor.settings.thermolator.port, {
     baudrate: Meteor.settings.thermolator.baudrate,
     parser: SerialPort.parsers.readline('\r\n')
   });
@@ -37,7 +37,7 @@ if (Meteor.settings.thermolator) {
   });
 
   port.on('data', Meteor.bindEnvironment(function(data) {
-    var reading = Number.parseFloat(data);
+    var reading = parseFloat(data);
     if (reading) {
       Peripherals.update({ _id: peripheral_name }, { $set: { temperature: reading } });
       if (Meteor.settings.logging) console.log('Received data from thermolator ', reading);
