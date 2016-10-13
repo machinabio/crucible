@@ -29,7 +29,7 @@ if (Meteor.settings.arduino) {
   });
 
   port.on('data', Meteor.bindEnvironment(function onData(data) {
-    var parsedData = EJSON.parse(data);
+    var parsedData = JSON.parse(data);
     if (Meteor.settings.logging) console.log('Received data from arduino ',parsedData);
     Peripherals.update({ _id: 'chamber' }, {
       $set: {
@@ -41,7 +41,10 @@ if (Meteor.settings.arduino) {
     Peripherals.update({ _id: 'led' }, { $set: { brightness: parsedData.LUX } });
   }));
 
+  var block = false;
   var updateArduino = function updateArduino() {
+    if (block) return;
+    block = true;
     var chamber = Peripherals.findOne({ _id: 'chamber' });
     var led = Peripherals.findOne({ _id: 'led' })
 
@@ -57,7 +60,7 @@ if (Meteor.settings.arduino) {
     //  2 = read pressure, read lux, and update LED PWM value
     //  3 = read pressure, read lux, and update LED and valve PWM values
 
-    if (port.isOpen()) port.write(EJSON.stringify(message));
+    if (port.isOpen()) port.write(JSON.stringify(message), ()=>{block = false;});
     if (Meteor.settings.logging) console.log('Sending data to arduino ',message);
   };
 

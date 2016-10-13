@@ -61,19 +61,21 @@ var set_valves = function set_valves() {
                                                             v2 : v2, 
                                                             v3 : v3, 
                                                             v4 : v4 }});
-    var callbacks = {
-        changed: function observe_chamber (id, fields) {
-            if (initializing) return;
-            var changed_fields = Object.getOwnPropertyNames(fields);
-            if (changed_fields.indexOf('setpoint')    != -1 
-                || changed_fields.indexOf('pressure') != -1
-                || changed_fields.indexOf('running')    != -1)  {
-                set_valves();
-            }
+ };
+ 
+var callbacks = {
+    changed: function observe_chamber (id, fields) {
+        if (initializing) return;
+        var changed_fields = Object.getOwnPropertyNames(fields);
+        if (changed_fields.indexOf('setpoint')    != -1 
+            || changed_fields.indexOf('pressure') != -1
+            || changed_fields.indexOf('running')    != -1)  {
+            set_valves();
         }
-    };
-
-    var query = Peripherals.find({_id: peripheral_name}).observeChanges(callbacks);
+    }
 };
+
+var query = Peripherals.find({_id: peripheral_name}).observeChanges(callbacks);
+
 
 var initializing = false;
