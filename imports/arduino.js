@@ -73,5 +73,3 @@ if (Meteor.settings.arduino) {
         if (Meteor.settings.logging) console.log('Sending data to arduino ', message);
     }, 1000);
 }
-
-export default updateArduino;
