@@ -4,7 +4,7 @@
   "description": "Meteor to Raspberry Pi to Arduino Integration",
   "main": "index.js",
   "dependencies": {
-    "blitzen": "https://github.com/alextessier/blitzen-nodejs",
+    "blitzen": "https://github.com/alextessier/blitzen-nodejs.git#master",
     "serialport": "^2.1.2",
     "virtual-serialport": "^0.2.1",
     "virtual-serialport": "https://github.com/luzlab/virtual-serialport.git#master"
