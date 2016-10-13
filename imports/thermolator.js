@@ -15,6 +15,7 @@ if (!Peripherals.findOne({ _id: peripheral_name })) {
   });
 }
 
+var port_initialized = false;
 var port;
 
 if (Meteor.settings.thermolator) {
@@ -33,6 +34,7 @@ if (Meteor.settings.thermolator) {
   });
 
   port.on('open', function() {
+    port_initialized = true;
     console.log('Port Thermo open');
   });
 
@@ -45,7 +47,7 @@ if (Meteor.settings.thermolator) {
   }));
 
   var send_to_thermolator = function send_to_thermolator(message) {
-    port.write(Buffer.from(message + '\r\n'));
+    if (port_initialized) port.write(Buffer.from(message + '\r\n'));
     if (Meteor.settings.logging) console.log('Sending data to thermolator ', message);
   };
 

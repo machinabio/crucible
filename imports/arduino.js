@@ -11,6 +11,8 @@ exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout
   console.log('......Resetting arduino: Error: ' + stderr);
 });
 var port;
+var port_initialized = false;
+
 if (Meteor.settings.arduino) {
   var SerialPort = require('serialport');
   if (process.env.NODE_ENV == 'development') {
@@ -24,6 +26,7 @@ if (Meteor.settings.arduino) {
   });
 
   port.on('open', function onOpen() {
+    port_initialized = true;
     console.log('Port Arduino open');
   });
 
@@ -56,7 +59,7 @@ if (Meteor.settings.arduino) {
     //  2 = read pressure, read lux, and update LED PWM value
     //  3 = read pressure, read lux, and update LED and valve PWM values
 
-    port.write(new Buffer.from(EJSON.stringify(message)));
+    if (port_initialized) port.write(new Buffer.from(EJSON.stringify(message)));
     if (Meteor.settings.logging) console.log('Sending data to arduino ',message);
   };
 
