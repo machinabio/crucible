@@ -21,6 +21,7 @@ if (!Peripherals.findOne({ _id: peripheral_name })) {
 var oldTime;
 var hysteresisReset = true;
 var set_valves = function set_valves() {
+    if (Meteor.settings.logging) console.log('Setting valve states');
     var v1 = 0;
     var v2 = 0;
     var v3 = 0;
@@ -28,7 +29,7 @@ var set_valves = function set_valves() {
     var chamber = Peripherals.findOne({ _id: peripheral_name });
     var pressTarget = chamber.setpoint;
     var pressure = chamber.pressure;
-    switch (chamber.state) {
+    switch (chamber.running) {
         case 'run':
             // TODO Refactor this code
             if (Math.abs(pressTarget - pressure) > .05) { 
@@ -64,10 +65,9 @@ var set_valves = function set_valves() {
         changed: function observe_chamber (id, fields) {
             if (initializing) return;
             var changed_fields = Object.getOwnPropertyNames(fields);
-
             if (changed_fields.indexOf('setpoint')    != -1 
                 || changed_fields.indexOf('pressure') != -1
-                || changed_fields.indexOf('state')    != -1)  {
+                || changed_fields.indexOf('running')    != -1)  {
                 set_valves();
             }
         }

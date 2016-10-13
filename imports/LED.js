@@ -34,11 +34,14 @@ var set_lux = function set_lux(){
 
 var callbacks = {
     changed: function observe_led (id, fields) {
-        if (initializing) return;
+        if (initializing) {
+            if (Meteor.settings.logging) console.log('caught change in LED but still initializing');
+            return;
+        }
         var changed_fields = Object.getOwnPropertyNames(fields);
         if ( changed_fields.indexOf('setpoint')      != -1
              || changed_fields.indexOf('brightness') != -1) {
-            console.log('Change in LED field '+fields);
+            if (Meteor.settings.logging) console.log('Change in LED field '+fields);
             set_lux();
         }
     }
