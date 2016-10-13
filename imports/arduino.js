@@ -4,68 +4,74 @@ import { EJSON } from 'meteor/ejson';
 import '/imports/peripherals.js';
 
 var exec = require('child_process').exec;
-
 exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
-  console.log('......Resetting arduino: Finished');
-  console.log('......Resetting arduino: Stdout: ' + stdout);
-  console.log('......Resetting arduino: Error: ' + stderr);
+    console.log('......Resetting arduino: Finished');
+    console.log('......Resetting arduino: Stdout: ' + stdout);
+    console.log('......Resetting arduino: Error: ' + stderr);
 });
-var port;
 
 if (Meteor.settings.arduino) {
-  var SerialPort = require('serialport');
-  if (process.env.NODE_ENV == 'development') {
-    console.log('Using virtual serialport for arduino');
-    SerialPort = require('virtual-serialport');
-  }
+    var SerialPort = require('serialport');
 
-  port = new SerialPort.SerialPort(Meteor.settings.arduino.port, {
-    baudrate: Meteor.settings.arduino.baudrate,
-    parser: SerialPort.parsers.readline('\r\n')
-  });
+    if (process.env.NODE_ENV == 'development') {
+        console.warn('Using virtual serialport for arduino');
+        SerialPort = require('virtual-serialport');
+        //WARN virtual-serialport might not be compatible with v2.x API
+    }
 
-  port.on('open', function onOpen() {
-    console.log('Port Arduino open');
-  });
-
-  port.on('data', Meteor.bindEnvironment(function onData(data) {
-    var parsedData = JSON.parse(data);
-    if (Meteor.settings.logging) console.log('Received data from arduino ',parsedData);
-    Peripherals.update({ _id: 'chamber' }, {
-      $set: {
-        chamberTemp: parsedData.TempChamber,
-        boardTemp: parsedData.TempBoard,
-        pressure: parsedData.Pressure
-      }
+    //WARN v2.x  and v4.x have different invokations for constructing serialports
+    var port = new SerialPort.SerialPort(Meteor.settings.arduino.port, {
+        baudrate: Meteor.settings.arduino.baudrate,
+        parser: SerialPort.parsers.readline('\r\n')
     });
-    Peripherals.update({ _id: 'led' }, { $set: { brightness: parsedData.LUX } });
-  }));
 
-  var block = false;
-  var updateArduino = function updateArduino() {
-    if (block) return;
-    block = true;
-    var chamber = Peripherals.findOne({ _id: 'chamber' });
-    var led = Peripherals.findOne({ _id: 'led' })
+    port.on('open', function onOpen() {
+        if (Meteor.settings.logging) console.log('Arduino serial port open: '+Meteor.settings.arduino.port);
+    });
+    
+    port.on('data', Meteor.bindEnvironment(function onData(data) {
+        let parsedData = JSON.parse(data);
+        Peripherals.update('chamber', {
+            $set: {
+                chamberTemp: parsedData.TempChamber,
+                boardTemp: parsedData.TempBoard,
+                pressure: parsedData.Pressure
+            }
+        });
+        Peripherals.update('led', {
+            $set: {
+                brightness: parsedData.LUX
+            }
+        });
+        if (Meteor.settings.logging) console.log('Received data from arduino ', parsedData);
+    }));
 
-    var message = {
-      luxPWM: led.dutyCycle * 2.55, // normalizes 0-100 to 0-255
-      vS: [chamber.v1, chamber.v2, chamber.v3, chamber.v4],
-      rst: 1,
-      todo: 3
-    };
-    // the todo field controls what the arduino does.
-    //  0 = read pressure and Lux
-    //  1 = read pressure, update valve PWM value
-    //  2 = read pressure, read lux, and update LED PWM value
-    //  3 = read pressure, read lux, and update LED and valve PWM values
+    var block = false;
+    Meteor.setInterval(function updateArduino() {
+        if (block) return
+        block = true;
+        let chamber = Peripherals.findOne('chamber');
+        let led = Peripherals.findOne('led')
 
-    if (port.isOpen()) port.write(JSON.stringify(message), ()=>{block = false;});
-    if (Meteor.settings.logging) console.log('Sending data to arduino ',message);
-  };
-
-  // Send data to Arduino
-  var query = Meteor.setInterval(updateArduino, 1000);
+        // luxPWM : led brightness. 0-255 (PWM setting)
+        // vS : Array of valve states. 0-255 (PWM setting)
+        // rst : Toggle the watchdog timer on the Arduino
+        // todo : controls what the arduino does.
+        //  0 = read pressure and Lux
+        //  1 = read pressure, update valve PWM value
+        //  2 = read pressure, read lux, and update LED PWM value
+        //  3 = read pressure, read lux, and update LED and valve PWM values
+        let message = {
+            luxPWM: led.dutyCycle * 2.55, // normalizes 0-100 to 0-255
+            vS: [chamber.v1, chamber.v2, chamber.v3, chamber.v4],
+            rst: 1,
+            todo: 3
+        };
+        if (port.isOpen()) {
+            port.write(JSON.stringify(message), () => { block = false; });
+        }
+        if (Meteor.settings.logging) console.log('Sending data to arduino ', message);
+    }, 1000);
 }
 
 export default updateArduino;
