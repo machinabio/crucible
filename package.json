@@ -5,8 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "blitzen": "https://github.com/alextessier/blitzen-nodejs.git#master",
+    "csv-write-stream": "^2.0.0",
     "serialport": "^2.1.2",
-    "virtual-serialport": "^0.2.1",
     "virtual-serialport": "https://github.com/luzlab/virtual-serialport.git#master"
   },
   "devDependencies": {
