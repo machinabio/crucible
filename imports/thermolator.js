@@ -15,12 +15,17 @@ if (!Peripherals.findOne(peripheral_name)) {
     });
 }
 
+var initSerialPort = function () {
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('Using virtual-serialport for thermolator');
+    return require('virtual-serialport')
+  }
+
+  return require('serialport');
+};
+
 if (Meteor.settings.thermolator) {
-    var SerialPort = require('serialport');
-    if (process.env.NODE_ENV == 'development') {
-        console.warn('Using virtual serialport for thermolator');
-        SerialPort = require('virtual-serialport');
-    }
+    var SerialPort = initSerialPort();
 
     const ThermoScientific = (Meteor.settings.thermolator.model.toLowerCase() == 'thermoscientific'); // if this is false, we assume there's a Julabo thermolator connected
     console.log("thermolator model ", ThermoScientific ? "Thermoscientific" : "Julabo");

@@ -11,7 +11,7 @@ var writer = csvWriter({
   sendHeaders: true,
 });
 
-writer.pipe(fs.createReadStream('reads.csv'));
+writer.pipe(fs.createWriteStream('reads.csv'));
 
 process.on('exit', function () {
   writer.end();

@@ -10,14 +10,19 @@ exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout
     console.log('......Resetting arduino: Error: ' + stderr);
 });
 
-if (Meteor.settings.arduino) {
-    var SerialPort = require('serialport');
-
-    if (process.env.NODE_ENV == 'development') {
-        console.warn('Using virtual serialport for arduino');
-        SerialPort = require('virtual-serialport');
+var initSerialPort = function () {
+    if (process.env.NODE_ENV === 'development') {
+        console.warn('Using virtual-serialport for arduino');
         //WARN virtual-serialport might not be compatible with v2.x API
+
+        return require('virtual-serialport')
     }
+
+    return require('serialport');
+};
+
+if (Meteor.settings.arduino) {
+    var SerialPort = initSerialPort();
 
     //WARN v2.x  and v4.x have different invokations for constructing serialports
     var port = new SerialPort.SerialPort(Meteor.settings.arduino.port, {
