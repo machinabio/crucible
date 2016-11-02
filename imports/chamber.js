@@ -15,7 +15,7 @@ if (!Peripherals.findOne(peripheral_name)) {
         v2: 0, // the pwm duty cycle 0-100
         v3: 0, // the pwm duty cycle 0-100
         v4: 0, // the pwm duty cycle 0-100
-        state: 'vent' // can be 'vent','run' or 'hold'
+        running: 'vent' // can be 'vent','run' or 'hold'
     });
 }
 
@@ -78,4 +78,4 @@ function set_valves() {
             v4: v4
         }
     });
-};
+}

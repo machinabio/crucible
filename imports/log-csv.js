@@ -27,7 +27,7 @@ var logReads = function () {
     ts: timestamp,
     pressure: chamber.pressure,
     pressureSetPoint: chamber.setpoint,
-    chamberState: chamber.state,
+    chamberState: chamber.running,
     valve1: chamber.v1,
     valve2: chamber.v2,
     valve3: chamber.v3,
