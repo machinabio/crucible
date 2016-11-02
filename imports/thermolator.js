@@ -33,7 +33,7 @@ if (Meteor.settings.thermolator) {
 
   var port = new SerialPort.SerialPort(Meteor.settings.thermolator.port, {
     baudrate: Meteor.settings.thermolator.baudrate,
-    parser: SerialPort.parsers.readline('\r\n')
+    parser: SerialPort.parsers.readline('\r\n'),
   });
 
   port.on('open', function onOpen() {
@@ -46,6 +46,7 @@ if (Meteor.settings.thermolator) {
   // });
 
   port.on('data', Meteor.bindEnvironment(function (data) {
+    console.log('Thermo Received:', data);
     let reading = parseFloat(data);
     if (reading) {
       Peripherals.update(peripheral_name, {
