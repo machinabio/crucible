@@ -23,7 +23,7 @@ Peripherals.find({ _id: peripheral_name }).observeChanges({
         }
         let changed_fields = Object.getOwnPropertyNames(fields);
         if (changed_fields.indexOf('setpoint') != -1 || changed_fields.indexOf('brightness') != -1) {
-            if (Meteor.settings.logging) console.log('Change in LED field ' + fields);
+            if (Meteor.settings.logging) console.log('Change in LED field(s):', fields);
             set_lux();
         }
     }
@@ -46,4 +46,4 @@ function set_lux() {
     if (ledPower > 100) ledPower = 70;
 
     Peripherals.update(peripheral_name, { $set: { dutyCycle: ledPower } });
-};
+}
