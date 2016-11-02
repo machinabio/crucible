@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import '/imports/peripherals.js';
 
 const peripheral_name = 'thermolator';
@@ -36,7 +37,11 @@ if (Meteor.settings.thermolator) {
     });
 
     port.on('open', function onOpen() {
-        console.log('Port Thermo open');
+      console.log('Thermo port open on:', Meteor.settings.thermolator.port);
+    });
+
+    port.on('data', function (data) {
+      console.log('Thermo Receive:', data);
     });
 
     port.on('data', Meteor.bindEnvironment(function(data) {
