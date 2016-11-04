@@ -1,6 +1,8 @@
 import {Meteor} from 'meteor/meteor';
 import '/imports/peripherals.js';
 
+var stripcc = require('stripcc');
+
 const peripheral_name = 'thermolator';
 
 // Turn off callbacks during initialization
@@ -46,6 +48,7 @@ if (Meteor.settings.thermolator) {
   // });
 
   port.on('data', Meteor.bindEnvironment(function (data) {
+    data = stripcc(data);
     console.log('Thermo Received:', data);
     let reading = parseFloat(data);
     if (reading) {

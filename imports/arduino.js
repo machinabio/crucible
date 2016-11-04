@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 // import { EJSON } from 'meteor/ejson';
 // Assets is still in the global namespace as of Meteor 1.3.4.2. Change to import in the future...
 import '/imports/peripherals.js';
+var stripcc = require('stripcc');
 
 var exec = require('child_process').exec;
 exec('python ' + Assets.absoluteFilePath('gpioReset.py'), function(error, stdout, stderr) {
@@ -35,6 +36,7 @@ if (Meteor.settings.arduino) {
   });
 
   port.on('data', Meteor.bindEnvironment(function onData(data) {
+    data = stripcc(data);
     let parsedData = JSON.parse(data);
     Peripherals.update('chamber', {
       $set: {
