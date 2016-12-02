@@ -8,7 +8,7 @@
     "csv-write-stream": "^2.0.0",
     "serialport": "^2.1.2",
     "stripcc": "^1.0.0",
-    "virtual-serialport": "https://github.com/luzlab/virtual-serialport.git#master"
+    "virtual-serialport": "^0.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1"
