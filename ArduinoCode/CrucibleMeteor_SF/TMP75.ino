@@ -7,7 +7,7 @@
 
 void TMP75Initialize(){
   delay(100);
- // Serial.println("Initializing TMP75");
+  Serial.println("Initializing TMP75");
   Wire.begin();                      // Join the I2C bus as a master 
   Wire.beginTransmission(TMP75_Address);       // Address the TMP75 sensor
   Wire.write(configReg);                       // Address the Configuration register 
@@ -25,6 +25,7 @@ void TMP75Read(){
 
 // Begin the reading the TMP75 Sensor 
 float readTemp(){
+  Serial.println("Reading TMP75");
   // Now take a Temerature Reading
   Wire.requestFrom(TMP75_Address,numOfBytes);  // Address the TMP75 and set number of bytes to receive
   byte MostSigByte = Wire.read();              // Read the first byte this is the MSB
@@ -34,8 +35,9 @@ float readTemp(){
   int TempSum = (((MostSigByte << 8) | LeastSigByte) >> 4); 
   // From Datasheet the TMP75 has a quantisation value of 0.0625 degreesC per bit
   float temp = (TempSum*0.0625);
-  //Serial.println(MostSigByte, BIN);   // Uncomment for debug of binary data from Sensor
-  //Serial.println(LeastSigByte, BIN);  // Uncomment for debug  of Binary data from Sensor
+  Serial.println("TMP75 Readings - MSB, then LSB");
+  Serial.println(MostSigByte, BIN);   // Uncomment for debug of binary data from Sensor
+  Serial.println(LeastSigByte, BIN);  // Uncomment for debug  of Binary data from Sensor
   return temp;                           // Return the temperature value
 }
 

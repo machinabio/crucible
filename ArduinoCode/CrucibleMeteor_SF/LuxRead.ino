@@ -73,14 +73,14 @@ void readLux() {
   {
     //delay(50);
     lux=(float)(event.light);
-    //Serial.print(" L = ");
-    //Serial.print(event.light); Serial.println(" lux");
+    Serial.print(" L = ");
+    Serial.print(event.light); Serial.println(" lux");
   }
   else
   {
     /* If event.light = 0 lux the sensor is probably saturated
        and no reliable data could be generated! */
-    //Serial.println(" Sensor overload");
+    Serial.println(" Sensor overload");
   }
 }
 
@@ -100,10 +100,10 @@ void configureSensor() {//called in the Setup
    tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_402MS);  /* 16-bit data but slowest conversions */
 
   /* Update these values depending on what you've set above! */  
-  //Serial.println("------------------------------------");
-  //Serial.print  (" Gain:         "); Serial.println("Auto");
-  //Serial.print  (" Timing:       "); Serial.println("13 ms");
-  //Serial.println("------------------------------------");
+  Serial.println("------------------------------------");
+  Serial.print  (" Gain:         "); Serial.println("Auto");
+  Serial.print  (" Timing:       "); Serial.println("13 ms");
+  Serial.println("------------------------------------");
   
 }
 
@@ -111,15 +111,15 @@ void configureSensor() {//called in the Setup
 void displaySensorDetails(){//also called during Setup
   sensor_t sensor;
   tsl.getSensor(&sensor);
-  //Serial.println("------------------------------------");
-  //Serial.print  (" Sensor:       "); Serial.println(sensor.name);
-  //Serial.print  (" Driver Ver:   "); Serial.println(sensor.version);
-  //Serial.print  (" Unique ID:    "); Serial.println(sensor.sensor_id);
-  //Serial.print  (" Max Value:    "); Serial.print(sensor.max_value); Serial.println(" lux");
-  //Serial.print  (" Min Value:    "); Serial.print(sensor.min_value); Serial.println(" lux");
-  //Serial.print  (" Resolution:   "); Serial.print(sensor.resolution); Serial.println(" lux");  
-  //Serial.println("------------------------------------");
-  //Serial.println("");
+  Serial.println("------------------------------------");
+  Serial.print  (" Sensor:       "); Serial.println(sensor.name);
+  Serial.print  (" Driver Ver:   "); Serial.println(sensor.version);
+  Serial.print  (" Unique ID:    "); Serial.println(sensor.sensor_id);
+  Serial.print  (" Max Value:    "); Serial.print(sensor.max_value); Serial.println(" lux");
+  Serial.print  (" Min Value:    "); Serial.print(sensor.min_value); Serial.println(" lux");
+  Serial.print  (" Resolution:   "); Serial.print(sensor.resolution); Serial.println(" lux");  
+  Serial.println("------------------------------------");
+  Serial.println("");
   delay(500);
 }
 

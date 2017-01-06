@@ -7,6 +7,7 @@ void readLuxSF() {
   if (light.getData(data0,data1)) {
     boolean good;  // True if neither sensor is saturated
     good = light.getLux(gain,ms,data0,data1,lux);
+    Serial.print( "Lux read\n");
   } else {
     byte error = light.getError();
     printError(error);
@@ -14,6 +15,7 @@ void readLuxSF() {
 }
 
 void initializeLuxSF(){
+  Serial.print( "Initializing Lux sensor\n");
   light.begin();
   unsigned char ID;
   
@@ -35,27 +37,27 @@ void printError(byte error) {
   {
     case 0:
       delay(1);
-      //Serial.println("success");
+      Serial.println("success");
       break;
     case 1:
       delay(1);
-      //Serial.println("data too long for transmit buffer");
+      Serial.println("data too long for transmit buffer");
       break;
     case 2:
       delay(1);
-      //Serial.println("received NACK on address (disconnected?)");
+      Serial.println("received NACK on address (disconnected?)");
       break;
     case 3:
       delay(1);
-      //Serial.println("received NACK on data");
+      Serial.println("received NACK on data");
       break;
     case 4:
       delay(1);
-      //Serial.println("other error");
+      Serial.println("other error");
       break;
     default:
       delay(1);
-      //Serial.println("unknown error");
+      Serial.println("unknown error");
   }
 }
 

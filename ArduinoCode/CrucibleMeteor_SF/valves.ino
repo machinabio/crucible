@@ -1,5 +1,5 @@
 void initializeValves(){
-  setPwmFrequency(9,1024);
+//  setPwmFrequency(9,1024);
   pinMode(valvePin1, OUTPUT);      // Vent
   pinMode(valvePin2, OUTPUT);      // Gas
   pinMode(valvePin3, OUTPUT);      // Vacuum Orifice
