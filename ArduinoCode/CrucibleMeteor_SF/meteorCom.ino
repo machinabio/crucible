@@ -17,12 +17,14 @@ void checkCommunication() {
 }
 
 void parseJson() {
+  Serial.print( "parsing json\n");
   int luxPWM=0;
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(inMeteor);
 
   if (!root.success()) {
     // fail to parse
+    Serial.println("failed to parse message from Pi");
     return;
   }
  
@@ -38,6 +40,7 @@ void parseJson() {
   //pressureTarget = root["pS"];
   
   if (resetFun){// if true arduino will keep running
+    Serial.print( "watchdog reset\n");
     resetWatchDog=millis();
   }
   
@@ -57,10 +60,16 @@ void parseJson() {
     analogWrite(CrucibleLightPin, luxPWM);
   }
   if (operation == 3){
+    Serial.print( "Op 3\n");
     readLuxSF();
+    MAX31865ReadTemp();
+    TMP75Read();
     readPressure();//updates vacPressure
     analogWrite(CrucibleLightPin, luxPWM);
-    analogWrite(valvePin1, valve1);  analogWrite(valvePin2, valve2);   analogWrite(valvePin3, valve3);  analogWrite(valvePin4, valve4);
+    analogWrite(valvePin1, valve1);
+    analogWrite(valvePin2, valve2);
+    analogWrite(valvePin3, valve3);
+    analogWrite(valvePin4, valve4);
   }
   
   printReadAll();
@@ -74,7 +83,7 @@ void printReadAll(){
     Serial1.print(temp);
     Serial1.print(",");
     Serial1.print("\n\"TempChamber\":");
-    Serial1.print(0);
+    Serial1.print(tempChamber);
     Serial1.print(",");
 //    Serial1.print("\n\"tempTarget\":");
 //    Serial1.print(tempTarget);

@@ -46,6 +46,7 @@ byte bitConv = B01100000; // Set to 12 bit conversion
 byte rdWr = 0x01;         // Set to read write
 byte rdOnly = 0x00;       // Set to Read
 float temp = 0;
+float tempChamber = 0;
 
 float tempTarget = 0;
 
@@ -105,7 +106,7 @@ int operation=0;
 int readyToRead=2;//1=ready, 2=ready and testing communication
 
 void setup() {
- // Serial.begin( 115200 );
+  Serial.begin( 115200 );
   Serial1.begin( 115200 );
   //while (!Serial) {}
   //while (!Serial1) {}

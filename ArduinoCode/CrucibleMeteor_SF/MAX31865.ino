@@ -45,56 +45,57 @@ void MAX31865Initialize(){
   SPI.setDataMode( SPI_MODE3 );
 
   /* Allow the MAX31865 to warm up. */
-  //delay( 1000 );
-  //Serial.println(" Initializing MAX31865");
-  rtd.configure( true, true, false, true, MAX31865_FAULT_DETECTION_NONE, true, true, 0x0000, 0x7fff );
+  delay( 1000 );
+  Serial.println("Initializing MAX31865");
+  rtd.configure( true, true, false, false, MAX31865_FAULT_DETECTION_NONE, true, false, 0x0000, 0x7fff );
 }
 
 
 void MAX31865ReadTemp() 
 {
+  Serial.print( "Reading MAX31865");
   rtd.read_all( );
 
   if( rtd.status( ) == 0 )
   {
-    double temperature = rtd.temperature( );
-    //Serial.print( " T = ");
-    //Serial.print( temperature, 1 );
-    //Serial.println(" deg C" );
-   // Serial.println("");
+    tempChamber = rtd.temperature( );
+    Serial.print( " T = ");
+    Serial.print( tempChamber, 1 );
+    Serial.println(" deg C" );
+    Serial.println("");
   }
   else 
   {
-    //Serial.print( "RTD fault register: " );
-    //Serial.print( rtd.status( ) );
-    //Serial.print( ": " );
+    Serial.print( "RTD fault register: " );
+    Serial.print( rtd.status( ) );
+    Serial.print( ": " );
     if( rtd.status( ) & MAX31865_FAULT_HIGH_THRESHOLD )
     {
-      //Serial.println( "RTD high threshold exceeded" );
+      Serial.println( "RTD high threshold exceeded" );
     }
     else if( rtd.status( ) & MAX31865_FAULT_LOW_THRESHOLD )
     {
-      //Serial.println( "RTD low threshold exceeded" );
+      Serial.println( "RTD low threshold exceeded" );
     }
     else if( rtd.status( ) & MAX31865_FAULT_REFIN )
     {
-      //Serial.println( "REFIN- > 0.85 x V_BIAS" );
+      Serial.println( "REFIN- > 0.85 x V_BIAS" );
     }
     else if( rtd.status( ) & MAX31865_FAULT_REFIN_FORCE )
     {
-      //Serial.println( "REFIN- < 0.85 x V_BIAS, FORCE- open" );
+      Serial.println( "REFIN- < 0.85 x V_BIAS, FORCE- open" );
     }
     else if( rtd.status( ) & MAX31865_FAULT_RTDIN_FORCE )
     {
-      //Serial.println( "RTDIN- < 0.85 x V_BIAS, FORCE- open" );
+      Serial.println( "RTDIN- < 0.85 x V_BIAS, FORCE- open" );
     }
     else if( rtd.status( ) & MAX31865_FAULT_VOLTAGE )
     {
-      //Serial.println( "Overvoltage/undervoltage fault");
+      Serial.println( "Overvoltage/undervoltage fault");
     }
     else
     {
-      //Serial.println( "Unknown fault; check connection" );
+      Serial.println( "Unknown fault; check connection" );
     }
   }
 
