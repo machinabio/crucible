@@ -43,3 +43,5 @@ Starting the app with NODE_ENV set to development allows development in the abse
 ```bash
 NODE_ENV=development meteor --settings settings.json
 ```
+
+#Note: branch shuffle: master > legacy, drew-refactor>master
