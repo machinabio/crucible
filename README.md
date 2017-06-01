@@ -45,3 +45,11 @@ NODE_ENV=development meteor --settings settings.json
 ```
 
 #Note: branch shuffle: master > legacy, drew-refactor>master
+
+
+## Hardware
+
+The Crucible hardware was designed using [Autodesk Fusion360](https://www.autodesk.com/products/fusion-360/overview). A clean model can be found [here](https://myhub.autodesk360.com/ue29cea53/g/projects/2017021563484406/data/dXJuOmFkc2sud2lwcHJvZDpmcy5mb2xkZXI6Y28ub3RjZFh1dnJSSk9yZVB2ZUJVclNPQQ/dXJuOmFkc2sud2lwcHJvZDpkbS5saW5lYWdlOmlBSEhQaVYxU3FxYlo2bUMyVmVDNmc?show=viewer&viewState=NoIgbgDAdAjCA0IDeAdEAXAngBwKZoC40ARXAZwEsBzAOzXjQEMyzd1C0ATATgFYAOAEYAzTsIC0uGABZB46RADMAdnGNOvXuN4A2AMbTh-TrgBMgmDrQBfEAF0gA)
+
+## Electronics
+The Crucible electronics system was designed using [CircuitMaker](https://circuitmaker.com/) A clean model can be found [here](https://workspace.circuitmaker.com/Projects/Details/Carlo-Quinonez-3/Crucible)
