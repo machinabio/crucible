@@ -1,4 +1,4 @@
-ts, pressure, pressureSetPoint, chamberState, valve1, valve2, valve3, valve4, boardTemp, chamberTemp, thermTemp, thermSetPoint, LEDBrightness, LEDDutyCycle
+ts,pressure,pressureSetPoint,chamberState,valve1,valve2,valve3,valve4,boardTemp,chamberTemp,thermTemp,thermSetPoint,LEDBrightness,LEDDutyCycle
 2017-06-29 17:54:06.883,0.87,-100,run,0,0,0,255,30.94,24.67,-1.7,-1,1144.34,0
 2017-06-29 17:54:07.868,0.87,-100,run,0,0,0,255,30.94,24.67,-1.7,-1,1144.34,0
 2017-06-29 17:54:08.882,0.87,-100,run,0,0,0,255,30.94,24.67,-1.7,-1,1144.34,0
