@@ -15,11 +15,11 @@ if (!Peripherals.findOne(peripheral_name)) {
         v2: 0, // the pwm duty cycle 0-100
         v3: 0, // the pwm duty cycle 0-100
         v4: 0, // the pwm duty cycle 0-100
-        running: 'vent' // can be 'vent','run' or 'hold'
+        running: 'vent' // can be 'vent','run' or 'h'
     });
 }
 
-var oldTime;
+var Time;
 var hysteresisReset = true;
 
 Peripherals.find(peripheral_name).observeChanges({
@@ -38,6 +38,7 @@ function set_valves() {
     let chamber = Peripherals.findOne(peripheral_name);
     let pressTarget = chamber.setpoint;
     let pressure = chamber.pressure;
+    //let CLOSED = 0;
     let v1 = 0;
     let v2 = 0;
     let v3 = 0;
@@ -68,8 +69,52 @@ function set_valves() {
             break;
         case 'hold':
             // do something
+            v1 = 0;
+            v2 = 0;
+            v3 = 0;
+            v4 = 0;
+
             break;
+        //case "p1":
+
     }
+
+    /*
+    function protocol_1() {
+      if (Meteor.settings.logging) console.log('Starting protocol 1');
+      //Start a timer and run the 'run' state for 10 minutes
+      //record pressure and calculate rms pressure
+      let timer10start = new Date();
+      if (Meteor.settings.logging) console.log('10min timer started.');
+
+      function timer10(){
+        let timer10curr = new Date();
+        let timerProgress = timer10curr - timer10start;
+        return timerProgress;
+      }
+
+      if (Meteor.settings.logging) console.log('Pressurizing.');
+      if timer10() < 600000 {
+        // run chamber as normal
+      }
+      let finalPressure = chamber.pressure; //output this value
+      let rmsPressure = finalPressure/Math.sqrt(2);
+      let rmsTimerStart = new Date();
+      if (Meteor.settings.logging) {
+        console.log('Final pressure: ' + String(chamber.pressure));
+        console.log('Holding chamber.');
+        console.log('Starting depressurization timer.');
+      }
+      //begin holding here
+      if (chamber.pressure < rmsPressure) {
+        //record time and vent
+        let rmsTimerEnd = new Date();
+        let rmsTime = rmsTimerEnd - rmsTimerStart;
+      }
+
+    }
+    */
+
     Peripherals.update(peripheral_name, {
         $set: {
             v1: v1,
