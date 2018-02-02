@@ -19,7 +19,7 @@ if (!Peripherals.findOne(peripheral_name)) {
     });
 }
 
-var Time;
+var oldTime;
 var hysteresisReset = true;
 
 Peripherals.find(peripheral_name).observeChanges({
