@@ -73,8 +73,14 @@ function set_valves() {
             v2 = 0;
             v3 = 0;
             v4 = 0;
-
             break;
+        case 'pull':
+          v1 = 255;
+          v2 = 0;
+          v3 = 0;
+          v4 = 255;
+          break;
+
         //case "p1":
 
     }

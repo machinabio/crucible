@@ -38,6 +38,10 @@ Template.controls.events({
   'click #chamber_hold'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'hold' } });
   }
+
+  'click #chamber_pull'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+  }
 });
 
 Template.controls.helpers({
@@ -103,6 +107,18 @@ Template.controls.helpers({
       class:  attributes
     };
   }
+
+  chamber_hold_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'pull') {
+      attributes = "ui green button"
+    } else {
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  }
+
 });
-
-
