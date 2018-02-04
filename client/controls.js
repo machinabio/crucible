@@ -108,7 +108,7 @@ Template.controls.helpers({
     };
   }
 
-  chamber_hold_attributes() {
+  chamber_pull_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'pull') {
       attributes = "ui green button"
