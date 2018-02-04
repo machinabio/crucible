@@ -106,7 +106,7 @@ Template.controls.helpers({
     return {
       class:  attributes
     };
-  }
+  },
 
   chamber_pull_attributes() {
     var attributes
