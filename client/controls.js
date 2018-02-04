@@ -37,7 +37,7 @@ Template.controls.events({
 
   'click #chamber_hold'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'hold' } });
-  }
+  },
 
   'click #chamber_pull'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
