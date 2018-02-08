@@ -40,15 +40,15 @@ Template.controls.events({
   },
 
   'click #chamber_pull'() {
-    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_vac' } });
   },
 
-  'click #chamber_pull'() {
-    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+  'click #chamber_gas'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   },
 
   'click #download_button'() {
-    import './.meteor/local/build/programs/server/reads.csv' as csv;
+    let csv = readTextFile('/./.meteor/local/build/programs/server/reads.csv');
     if (!csv.match(/^data:text\/csv/i)) {
             csv = 'data:text/csv;charset=utf-8,' + csv;
         }
@@ -61,6 +61,22 @@ Template.controls.events({
 
 
     //SOURCE:
+    function readTextFile(file) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function ()
+        {
+            if(rawFile.readyState === 4)
+            {
+                if(rawFile.status === 200 || rawFile.status == 0)
+                {
+                    var allText = rawFile.responseText;
+                    alert(allText);
+                }
+            }
+        }
+        rawFile.send(null);
+    }
     /*function handleFiles(files) {
       // Check for the various File API support.
       if (window.FileReader) {
@@ -104,7 +120,7 @@ Template.controls.events({
           alert("Canno't read file !");
       }
     }*/
-  },
+  }
 });
 
 Template.controls.helpers({
