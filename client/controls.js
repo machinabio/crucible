@@ -43,6 +43,10 @@ Template.controls.events({
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
   },
 
+  'click #chamber_pull'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+  },
+
   'click #download_button'() {
     import './.meteor/local/build/programs/server/reads.csv' as csv;
     if (!csv.match(/^data:text\/csv/i)) {
@@ -99,8 +103,8 @@ Template.controls.events({
       if(evt.target.error.name == "NotReadableError") {
           alert("Canno't read file !");
       }
-    }
-  }*/
+    }*/
+  },
 });
 
 Template.controls.helpers({
@@ -188,6 +192,6 @@ Template.controls.helpers({
     return {
       class:  attributes
     };
-  }
+  },
 
 });
