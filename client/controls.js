@@ -48,7 +48,7 @@ Template.controls.events({
   },
 
   'click #download_button'() {
-    let csv = readTextFile('/./.meteor/local/build/programs/server/reads.csv');
+    let csv = readTextFile('file://./home/pi/crucible/.meteor/local/build/programs/server/reads.csv');
     if (!csv.match(/^data:text\/csv/i)) {
             csv = 'data:text/csv;charset=utf-8,' + csv;
         }
