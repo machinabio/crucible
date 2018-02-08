@@ -65,7 +65,7 @@ function set_valves() {
             }
             break;
         case 'vent':
-            v1 = 255;
+            v3 = 255;
             break;
         case 'hold':
             // do something
@@ -74,11 +74,17 @@ function set_valves() {
             v3 = 0;
             v4 = 0;
             break;
-        case 'pull':
+        case 'pull_vac':
           v1 = 255;
           v2 = 0;
           v3 = 0;
           v4 = 255;
+          break;
+        case 'pull_gas':
+          v1 = 0;
+          v2 = 255;
+          v3 = 0;
+          v4 = 0;
           break;
 
         //case "p1":
@@ -120,6 +126,7 @@ function set_valves() {
 
     }
     */
+
 
     Peripherals.update(peripheral_name, {
         $set: {

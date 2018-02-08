@@ -40,11 +40,11 @@ Template.controls.events({
   },
 
   'click #chamber_pull'() {
-    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_vac' } });
   },
 
-  'click #chamber_pull'() {
-    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
+  'click #chamber_gas'() {
+    Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   },
 
   'click #download_button'() {
@@ -61,8 +61,7 @@ Template.controls.events({
 
 
     //SOURCE:
-    function readTextFile(file)
-    {
+    function readTextFile(file) {
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, true);
         rawFile.onreadystatechange = function ()
@@ -121,7 +120,7 @@ Template.controls.events({
           alert("Canno't read file !");
       }
     }*/
-  },
+  }
 });
 
 Template.controls.helpers({
