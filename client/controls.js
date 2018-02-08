@@ -41,7 +41,66 @@ Template.controls.events({
 
   'click #chamber_pull'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull' } });
-  }
+  },
+
+  'click #download_button'() {
+    import './.meteor/local/build/programs/server/reads.csv' as csv;
+    if (!csv.match(/^data:text\/csv/i)) {
+            csv = 'data:text/csv;charset=utf-8,' + csv;
+        }
+    let data = encodeURI(csv);
+    let link = document.createElement('a');
+    let filename = {_id : 'readings_to_file'} || 'export.csv'
+    link.setAttribute('href', data);
+    link.setAttribute('download', filename);
+    link.click();
+
+
+    //SOURCE:
+    /*function handleFiles(files) {
+      // Check for the various File API support.
+      if (window.FileReader) {
+          // FileReader are supported.
+          getAsText(files[0]);
+      } else {
+          alert('FileReader are not supported in this browser.');
+      }
+    }
+
+    function getAsText(fileToRead) {
+      var reader = new FileReader();
+      // Read file into memory as UTF-8
+      reader.readAsText(fileToRead);
+      // Handle errors load
+      reader.onload = loadHandler;
+      reader.onerror = errorHandler;
+    }
+
+    function loadHandler(event) {
+      var csv = event.target.result;
+      processData(csv);
+    }
+
+    function processData(csv) {
+        var allTextLines = csv.split(/\r\n|\n/);
+        var lines = [];
+        for (var i=0; i<allTextLines.length; i++) {
+            var data = allTextLines[i].split(';');
+                var tarr = [];
+                for (var j=0; j<data.length; j++) {
+                    tarr.push(data[j]);
+                }
+                lines.push(tarr);
+        }
+      console.log(lines);
+    }
+
+    function errorHandler(evt) {
+      if(evt.target.error.name == "NotReadableError") {
+          alert("Canno't read file !");
+      }
+    }
+  }*/
 });
 
 Template.controls.helpers({
@@ -115,6 +174,16 @@ Template.controls.helpers({
     } else {
       attributes = "ui inverted green button";
     }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  download_button_attributes() {
+    var attributes
+    //SHOULD NOT BE CHAMBER AND PULL
+    attributes = "ui teal button";
 
     return {
       class:  attributes
