@@ -1,5 +1,4 @@
 import '/imports/peripherals.js';
-import '/imports/papaparse/papa-parse';
 import logReads from '/imports/log-csv.js';
 
 Template.controls.events({
@@ -51,6 +50,8 @@ Template.controls.events({
 
   'submit #readings_to_file'(event, template) {
     var filename = template.find('#readings_to_file').value || 'reads.csv';
+    var fs = require("fs");
+    var csvWriter = require("csv-write-stream");
 
     var writer = csvWriter({
       sendHeaders: true,
