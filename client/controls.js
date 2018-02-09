@@ -1,4 +1,6 @@
 import '/imports/peripherals.js';
+import '/imports/papaparse/papa-parse';
+import logReads from '/imports/log-csv.js';
 
 Template.controls.events({
   'submit #thermolator_setpoint'(event , template) {
@@ -47,79 +49,33 @@ Template.controls.events({
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   },
 
+  'submit #readings_to_file'(event, template) {
+    var filename = template.find('#readings_to_file').value || 'reads.csv';
+
+    var writer = csvWriter({
+      sendHeaders: true,
+    });
+
+    writer.pipe(fs.createWriteStream(filename, {flags: 'a'}));
+
+    process.on('exit', function () {
+      writer.end();
+
+    });
+    Meteor.setInterval(logReads, FREQ);
+
+  },
+
   'click #download_button'() {
-    let csv = readTextFile('file://./home/pi/crucible/.meteor/local/build/programs/server/reads.csv');
-    if (!csv.match(/^data:text\/csv/i)) {
-            csv = 'data:text/csv;charset=utf-8,' + csv;
-        }
-    let data = encodeURI(csv);
-    let link = document.createElement('a');
-    let filename = {_id : 'readings_to_file'} || 'export.csv'
-    link.setAttribute('href', data);
-    link.setAttribute('download', filename);
-    link.click();
+    //SOURCE: https://github.com/mholt/PapaParse/issues/175
+    var blob = new Blob([filename]);
+    var a = window.document.createElement("a");
+    a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+    document.body.removeChild(a);
 
-
-    //SOURCE:
-    function readTextFile(file) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function ()
-        {
-            if(rawFile.readyState === 4)
-            {
-                if(rawFile.status === 200 || rawFile.status == 0)
-                {
-                    var allText = rawFile.responseText;
-                    alert(allText);
-                }
-            }
-        }
-        rawFile.send(null);
-    }
-    /*function handleFiles(files) {
-      // Check for the various File API support.
-      if (window.FileReader) {
-          // FileReader are supported.
-          getAsText(files[0]);
-      } else {
-          alert('FileReader are not supported in this browser.');
-      }
-    }
-
-    function getAsText(fileToRead) {
-      var reader = new FileReader();
-      // Read file into memory as UTF-8
-      reader.readAsText(fileToRead);
-      // Handle errors load
-      reader.onload = loadHandler;
-      reader.onerror = errorHandler;
-    }
-
-    function loadHandler(event) {
-      var csv = event.target.result;
-      processData(csv);
-    }
-
-    function processData(csv) {
-        var allTextLines = csv.split(/\r\n|\n/);
-        var lines = [];
-        for (var i=0; i<allTextLines.length; i++) {
-            var data = allTextLines[i].split(';');
-                var tarr = [];
-                for (var j=0; j<data.length; j++) {
-                    tarr.push(data[j]);
-                }
-                lines.push(tarr);
-        }
-      console.log(lines);
-    }
-
-    function errorHandler(evt) {
-      if(evt.target.error.name == "NotReadableError") {
-          alert("Canno't read file !");
-      }
-    }*/
   }
 });
 
@@ -139,7 +95,7 @@ Template.controls.helpers({
   stop_attributes() {
     var state = Peripherals.findOne({_id : 'thermolator'}).running;
     return {
-      class:  state ? 'ui inverted red button' : 'ui red button'
+      class:  state ? 'ui red button' : 'ui inverted red button'
     };
   },
 
@@ -177,9 +133,9 @@ Template.controls.helpers({
   chamber_hold_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'hold') {
-      attributes = "ui red button"
+      attributes = "ui inverted red button"
     } else {
-      attributes = "ui inverted red button";
+      attributes = "ui red button";
     }
 
     return {
@@ -189,7 +145,20 @@ Template.controls.helpers({
 
   chamber_pull_attributes() {
     var attributes
-    if (Peripherals.findOne({_id : 'chamber'}).running == 'pull') {
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'pull_vac') {
+      attributes = "ui green button"
+    } else {
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  chamber_gas_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'pull_gas') {
       attributes = "ui green button"
     } else {
       attributes = "ui inverted green button";
@@ -208,6 +177,6 @@ Template.controls.helpers({
     return {
       class:  attributes
     };
-  },
+  }
 
 });

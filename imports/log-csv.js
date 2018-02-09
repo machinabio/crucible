@@ -15,6 +15,7 @@ writer.pipe(fs.createWriteStream('reads.csv'));
 
 process.on('exit', function () {
   writer.end();
+
 });
 
 var logReads = function () {
