@@ -1,5 +1,5 @@
 import '/imports/peripherals.js';
-import logReads from '/imports/log-csv.js';
+import {startLog, endLog, recording} from 'record.js';
 
 Template.controls.events({
   'submit #thermolator_setpoint'(event , template) {
@@ -48,35 +48,16 @@ Template.controls.events({
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   },
 
-  'submit #readings_to_file'(event, template) {
-    var filename = template.find('#readings_to_file').value || 'reads.csv';
-    var fs = require("fs");
-    var csvWriter = require("csv-write-stream");
-
-    var writer = csvWriter({
-      sendHeaders: true,
-    });
-
-    writer.pipe(fs.createWriteStream(filename, {flags: 'a'}));
-
-    process.on('exit', function () {
-      writer.end();
-
-    });
-    Meteor.setInterval(logReads, FREQ);
+  'click #record_button'() {
+      recording = true;
+      var c_n = startLog();
 
   },
 
-  'click #download_button'() {
-    //SOURCE: https://github.com/mholt/PapaParse/issues/175
-    var blob = new Blob([filename]);
-    var a = window.document.createElement("a");
-    a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
-    document.body.removeChild(a);
-
+  'submit #readings_to_file'(event, template) {
+    var filename = template.find('#readings_to_file').value;
+    endLog(filename, c_n);
+    recording = false;
   }
 });
 
@@ -170,10 +151,14 @@ Template.controls.helpers({
     };
   },
 
-  download_button_attributes() {
+  record_button_attributes() {
     var attributes
     //SHOULD NOT BE CHAMBER AND PULL
-    attributes = "ui teal button";
+    if (recording) {
+      attributes = "ui inverted teal button"
+    } else {
+      attributes = "ui teal button";
+    }
 
     return {
       class:  attributes

@@ -52,14 +52,17 @@
   <h4>
   Data
   </h4>
-
+  <!-- CHANGE to "start recording" and have download simply download the file;
+       On click of startt button, append an iframe
+          => write to this iframe to record data -->
+  <div class="ui buttons mini">
+    <button {{record_button_attributes}} id="record_button">Start Recording</button>
+  </div>
+  <div id="recorded_readings"></div>
   <form id='Download Readings'>
       <input style="width: 100px" id="readings_to_file" type="text" placeholder="file name"/>
-      <input type="submit" value="Start Recording"/>
+      <input type="submit" value="Stop and Download"/>
   </form>
   <br>
-  <div class="ui buttons mini">
-    <button {{download_button_attributes}} id="download_button">Stop and Download</button>
-</div>
 
 </template>
