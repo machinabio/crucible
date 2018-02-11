@@ -1,5 +1,5 @@
 import '/imports/peripherals.js';
-import {startLog, endLog, recording} from 'record.js';
+import 'record.js';
 
 Template.controls.events({
   'submit #thermolator_setpoint'(event , template) {
