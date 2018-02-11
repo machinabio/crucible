@@ -8,6 +8,7 @@ var writer = csvWriter({sendHeaders: true});
 var recording;
 
 var startLog = function() {
+  recording = true;
   //create text node of writable stram of data readings
   var content = new Buffer();
   writer.pipe(content);
@@ -46,7 +47,7 @@ var startLog = function() {
 };
 
 var endLog = function(filename, c_n_tuple) {
-
+  recording = false;
   //SOURCE: https://github.com/mholt/PapaParse/issues/175
   var blob = new Blob(c_n_tuple[0]);
   document.page.removeChild(c_n_tuple[1]);
