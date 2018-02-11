@@ -49,15 +49,12 @@ Template.controls.events({
   },
 
   'click #record_button'() {
-      recording = true;
       var c_n = startLog();
-
   },
 
   'submit #readings_to_file'(event, template) {
     var filename = template.find('#readings_to_file').value;
     endLog(filename, c_n);
-    recording = false;
   }
 });
 
