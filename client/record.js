@@ -1,5 +1,7 @@
 import '/imports/peripherals.js';
-//var csvWriter = require("csv-write-stream");
+//import * from '/node_modules/csv-write-stream';
+
+var csvWriter = require("csv-write-stream");
 
 var FREQ = process.env.LOG_FREQUENCY || 1000;
 
