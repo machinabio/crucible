@@ -1,5 +1,5 @@
 import '/imports/peripherals.js';
-import '/client/record.js';
+//import '/client/record.js';
 
 Template.controls.events({
   'submit #thermolator_setpoint'(event , template) {
@@ -46,8 +46,8 @@ Template.controls.events({
 
   'click #chamber_gas'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
-  },
-
+  }
+/*
   'click #record_button'() {
       var c_n = startLog();
   },
@@ -55,7 +55,7 @@ Template.controls.events({
   'submit #readings_to_file'(event, template) {
     var filename = template.find('#readings_to_file').value;
     endLog(filename, c_n);
-  }
+  }*/
 });
 
 Template.controls.helpers({
@@ -146,8 +146,8 @@ Template.controls.helpers({
     return {
       class:  attributes
     };
-  },
-
+  }
+/*
   record_button_attributes() {
     var attributes
     //SHOULD NOT BE CHAMBER AND PULL
@@ -160,6 +160,6 @@ Template.controls.helpers({
     return {
       class:  attributes
     };
-  }
+  }*/
 
 });
