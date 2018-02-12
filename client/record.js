@@ -1,7 +1,8 @@
+/*"use strict"
 import '/imports/peripherals.js';
 //import * from '/node_modules/csv-write-stream';
 
-var csvWriter = require("csv-write-stream")
+var csvWriter = require('csv-write-stream')
 var writer = csvWriter({
   sendHeaders: true,
 })
@@ -65,3 +66,4 @@ var endLog = function(filename, c_n_tuple) {
 };
 
 export {startLog, endLog, recording};
+*/
