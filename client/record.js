@@ -1,14 +1,16 @@
 import '/imports/peripherals.js';
 //import * from '/node_modules/csv-write-stream';
 
-var csvWriter = require("csv-write-stream");
+var csvWriter = require("csv-write-stream")
+var writer = csvWriter({
+  sendHeaders: true,
+})
+
 
 var FREQ = process.env.LOG_FREQUENCY || 1000;
 
 var page = document.getElementById("recorded_readings");
-var writer = new csvWriter({
-  sendHeaders: true,
-});
+
 var recording;
 
 var startLog = function() {
