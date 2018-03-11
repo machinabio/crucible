@@ -66,9 +66,7 @@ function set_valves() {
             break;
         case 'vent':
             v3 = 255;
-            v2 = 0;
-            v3 = 0;
-            v4 = 0;
+
             break;
         case 'hold':
             // do something
@@ -78,7 +76,7 @@ function set_valves() {
             v4 = 0;
             break;
         case 'pull_vac':
-          v1 = 0;
+          v1 = 255;
           v2 = 0;
           v3 = 0;
           v4 = 255;
