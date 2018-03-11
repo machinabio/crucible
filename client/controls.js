@@ -47,6 +47,43 @@ Template.controls.events({
   'click #chamber_gas'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   }
+
+  'click #v1_ON'() {
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v1_ON') {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v1_OFF' } });
+
+    } else {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v1_ON' } });
+    }
+  },
+
+  'click #v2_ON'() {
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_ON') {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v2_OFF' } });
+
+    } else {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v2_ON' } });
+    }
+  },
+
+  'click #v3_ON'() {
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_ON') {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v3_OFF' } });
+
+    } else {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v3_ON' } });
+    }
+  },
+
+  'click #v4_ON'() {
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_ON') {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v4_OFF' } });
+
+    } else {
+      Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v4_ON' } });
+    }
+  }
+
 /*
   'click #record_button'() {
       var c_n = startLog();
@@ -140,6 +177,58 @@ Template.controls.helpers({
     if (Peripherals.findOne({_id : 'chamber'}).running == 'pull_gas') {
       attributes = "ui green button"
     } else {
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  v1_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v1_ON') {
+      attributes = "ui green button"
+    } else if (Peripherals.findOne({_id : 'chamber'}).running == 'v1_OFF'){
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  v2_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_ON') {
+      attributes = "ui green button"
+    } else if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_OFF'){
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  v3_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_ON') {
+      attributes = "ui green button"
+    } else if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_OFF'){
+      attributes = "ui inverted green button";
+    }
+
+    return {
+      class:  attributes
+    };
+  },
+
+  v4_attributes() {
+    var attributes
+    if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_ON') {
+      attributes = "ui green button"
+    } else if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_OFF'){
       attributes = "ui inverted green button";
     }
 
