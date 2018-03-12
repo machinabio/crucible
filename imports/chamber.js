@@ -81,6 +81,12 @@ function set_valves() {
           v3 = 0;
           v4 = 255;
           break;
+        case 'pull_gas':
+          v1 = 0;
+          v2 = 255;
+          v3 = 0;
+          v4 = 0;
+          break;
         case 'v1_ON':
           v1 = 255;
           break;
