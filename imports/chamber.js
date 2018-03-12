@@ -87,7 +87,30 @@ function set_valves() {
           v3 = 0;
           v4 = 0;
           break;
-
+        case 'v1_ON':
+          v1 = 255;
+          break;
+        case 'v1_OFF':
+          v1 = 0
+          break;
+        case 'v2_ON':
+          v2 = 255;
+          break;
+        case 'v2_OFF':
+          v2 = 0
+          break;
+        case 'v3_ON':
+          v3 = 255;
+          break;
+        case 'v3_OFF':
+          v3 = 0
+          break;
+        case 'v4_ON':
+          v4 = 255;
+          break;
+        case 'v4_OFF':
+          v4 = 0
+          break;
         //case "p1":
 
     }
