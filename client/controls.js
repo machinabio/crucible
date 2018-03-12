@@ -46,7 +46,7 @@ Template.controls.events({
 
   'click #chamber_gas'() {
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
-  }
+  },
 
   'click #v1_ON'() {
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v1_ON') {
