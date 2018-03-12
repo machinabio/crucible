@@ -48,7 +48,7 @@ Template.controls.events({
     Peripherals.update({ _id: 'chamber' }, { $set: { running: 'pull_gas' } });
   },
 
-  'click #v1_ON'() {
+  'click #v1'() {
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v1_ON') {
       Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v1_OFF' } });
 
@@ -57,7 +57,7 @@ Template.controls.events({
     }
   },
 
-  'click #v2_ON'() {
+  'click #v2'() {
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_ON') {
       Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v2_OFF' } });
 
@@ -66,7 +66,7 @@ Template.controls.events({
     }
   },
 
-  'click #v3_ON'() {
+  'click #v3'() {
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_ON') {
       Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v3_OFF' } });
 
@@ -75,7 +75,7 @@ Template.controls.events({
     }
   },
 
-  'click #v4_ON'() {
+  'click #v4'() {
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_ON') {
       Peripherals.update({ _id: 'chamber' }, { $set: { running: 'v4_OFF' } });
 
