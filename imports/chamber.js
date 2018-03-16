@@ -109,9 +109,17 @@ function set_valves() {
           v4 = 255;
           break;
         case 'v4_OFF':
-          v4 = 0
+          v4 = 0;
           break;
-        //case "p1":
+        case "sweep":
+          let valves = [v1, v2, v3, v4];
+          for (i = 0; i < 4; i++){
+            let valve = valves[i];
+            for (i = 0; i <= 255; i+=2) {
+              valve = i;
+              setTimeout(function(){}, 5000);
+          }
+        }
 
     }
 
