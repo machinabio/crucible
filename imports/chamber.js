@@ -118,8 +118,9 @@ function set_valves() {
             for (i = 0; i <= 255; i+=2) {
               valve = i;
               setTimeout(function(){}, 5000);
-          }
-        }
+          };
+        };
+        break;
 
     }
 
