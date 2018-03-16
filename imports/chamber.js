@@ -39,10 +39,6 @@ function set_valves() {
     let pressTarget = chamber.setpoint;
     let pressure = chamber.pressure;
     //let CLOSED = 0;
-    let v1 = 0;
-    let v2 = 0;
-    let v3 = 0;
-    let v4 = 0;
     switch (chamber.running) {
         case 'run':
             // TODO Refactor this code
