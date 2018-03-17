@@ -215,7 +215,7 @@ Template.controls.helpers({
   v2_on_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_ON') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
@@ -228,7 +228,7 @@ Template.controls.helpers({
   v2_off_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v2_OFF') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
@@ -241,7 +241,7 @@ Template.controls.helpers({
   v3_on_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_ON') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
@@ -254,7 +254,7 @@ Template.controls.helpers({
   v3_off_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v3_OFF') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
@@ -267,7 +267,7 @@ Template.controls.helpers({
   v4_on_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_ON') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
@@ -280,7 +280,7 @@ Template.controls.helpers({
   v4_off_attributes() {
     var attributes
     if (Peripherals.findOne({_id : 'chamber'}).running == 'v4_OFF') {
-      attributes = "ui inactive button";
+      attributes = "ui inactive button"
     } else {
       attributes = "ui active button";
     }
