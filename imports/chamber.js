@@ -113,7 +113,7 @@ function set_valves() {
             let valve = valves[i];
             for (i = 0; i <= 255; i+=2) {
               valve = i;
-              setTimeout(function(){}, 5000);
+              //setTimeout(function(){}, 5000);
           };
         };
         break;
