@@ -119,7 +119,6 @@ function set_valves() {
               timer();
           };
         break;*/
-        case
 
     }
 
