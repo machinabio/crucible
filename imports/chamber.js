@@ -110,10 +110,9 @@ function set_valves() {
         case "sweep":
             for (i = 0; i <= 255; i+=2) {
               v3 = i;
-              Peripherals.update(peripheral_name, {  $set: {v3: v3} } )
+              Peripherals.update(peripheral_name, {  $set: {v3: v3} });
               setTimeout(function(){}, 5000);
           };
-        };
         break;
 
     }
