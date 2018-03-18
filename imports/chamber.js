@@ -109,8 +109,10 @@ function set_valves() {
           v4 = 0;
           break;
         case "sweep":
-        function timer() {
-            setTimeout(function(){ console.log('updating valve. Sweep point=' + String(v3)); }, 5000);
+            function timer() {
+              setTimeout(function(){ console.log('updating valve. Sweep point=' + String(v3)); }, 5000);
+            };
+
             for (i = 0; i <= 255; i+=2) {
               v3 = i;
               Peripherals.update(peripheral_name, {  $set: {v3: v3} });
