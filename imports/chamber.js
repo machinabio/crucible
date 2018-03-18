@@ -114,7 +114,6 @@ function set_valves() {
               v3 = i;
               Peripherals.update(peripheral_name, {  $set: {v3: v3} });
               timer();
-}
           };
         break;
 
