@@ -20,6 +20,30 @@ Template.controls.events({
     event.preventDefault();
   },
 
+  'submit #v1_setpoint'(event , template) {
+    var setpoint = template.find('#v1-setpoint').value;
+    Peripherals.update({ _id: 'chamber' }, { $set: { v1: setpoint } });
+    event.preventDefault();
+  },
+
+  'submit #v2_setpoint'(event , template) {
+    var setpoint = template.find('#v2-setpoint').value;
+    Peripherals.update({ _id: 'chamber' }, { $set: { v2: setpoint } });
+    event.preventDefault();
+  },
+
+  'submit #v3_setpoint'(event , template) {
+    var setpoint = template.find('#v3-setpoint').value;
+    Peripherals.update({ _id: 'chamber' }, { $set: { v3: setpoint } });
+    event.preventDefault();
+  },
+
+  'submit #v4_setpoint'(event , template) {
+    var setpoint = template.find('#v4-setpoint').value;
+    Peripherals.update({ _id: 'chamber' }, { $set: { v4: setpoint } });
+    event.preventDefault();
+  },
+
   'click #thermolator_run'() {
     Peripherals.update({ _id: 'thermolator' }, { $set: { running: true } });
   },

@@ -49,17 +49,41 @@
   		<button {{chamber_gas_attributes}} id="chamber_gas">Pull Gas</button>
       </div>
       <br>
+
+      <form id='v1_setpoint'>
+          <input style="width: 100px" id="v1-setpoint" type="text" placeholder="set"/>
+          <input type="submit" value="Set"/>
+      </form>
+      <br>
       V1 status is {{chamber.v1}} / 255 <br>
   		<button {{v1_on_attributes}} id="v1-on">V1 ON</button>
       <button {{v1_off_attributes}} id="v1-off">V1 OFF</button>
+      <br>
+
+      <form id='v2_setpoint'>
+          <input style="width: 100px" id="v2-setpoint" type="text" placeholder="set"/>
+          <input type="submit" value="Set"/>
+      </form>
       <br>
       V2 status is {{chamber.v2}} / 255 <br>
       <button {{v2_on_attributes}} id="v2-on">V2 ON</button>
       <button {{v2_off_attributes}} id="v2-off">V2 OFF</button>
       <br>
+
+      <form id='v3_setpoint'>
+          <input style="width: 100px" id="v3-setpoint" type="text" placeholder="set"/>
+          <input type="submit" value="Set"/>
+      </form>
+      <br>
       V3 status is {{chamber.v3}} / 255 <br>
       <button {{v3_on_attributes}} id="v3-on">V3 ON</button>
       <button {{v3_off_attributes}} id="v3-off">V3 OFF</button>
+      <br>
+
+      <form id='v4_setpoint'>
+          <input style="width: 100px" id="v4-setpoint" type="text" placeholder="set"/>
+          <input type="submit" value="Set"/>
+      </form>
       <br>
       V4 status is {{chamber.v4}} / 255 <br>
       <button {{v4_on_attributes}} id="v4-on">V4 ON</button>
